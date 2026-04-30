@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cover Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 210mm;
+            height: 297mm;
+            background: #fbfcfa;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Source Serif 4', 'Times New Roman', Georgia, serif;
+            color: #111;
+        }
+
+        /* ── Subtle paper texture using radial gradient ── */
+        .page-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(0,153,77,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse at 50% 100%, rgba(0,153,77,0.04) 0%, transparent 70%),
+                #fbfcfa;
+        }
+
+        /* ── Very faint caduceus watermark center ── */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.035;
+            width: 160px;
+        }
+
+        /* ── Outer border ── */
+        .border-outer {
+            position: absolute;
+            top: 13mm;
+            left: 13mm;
+            right: 13mm;
+            bottom: 13mm;
+            border: 2.2px solid #4d8265;
+            border-radius: 10px;
+        }
+
+        /* ── Inner border ── */
+        .border-inner {
+            position: absolute;
+            top: 15.5mm;
+            left: 15.5mm;
+            right: 15.5mm;
+            bottom: 15.5mm;
+            border: 0.8px solid #9abfaa;
+            border-radius: 7px;
+        }
+
+
+
+        /* ── Footer pharmacy icons strip ── */
+        .footer-strip {
+            position: absolute;
+            bottom: 15.5mm;
+            left: 15.5mm;
+            right: 15.5mm;
+            height: 28mm;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #c2d9cb;
+            padding-top: 6px;
+        }
+
+        .footer-strip svg {
+            width: 58px;
+            height: 58px;
+        }
+
+        .footer-vline {
+            width: 1px;
+            height: 44px;
+            background: #c2d9cb;
+        }
+
+        /* ── Main content ── */
+        .page-content {
+            position: absolute;
+            top: 16mm;
+            left: 16mm;
+            right: 16mm;
+            bottom: 43mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            width: 125px;
+            margin-top: 16px;
+            margin-bottom: 14px;
+        }
+
+        .uni-name {
+            font-family: 'Source Sans 3', Arial, sans-serif;
+            color: #00994d;
+            font-size: 21.5pt;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.6px;
+            margin-bottom: 7px;
+        }
+
+        .dept-name {
+            font-family: 'Source Serif 4', serif;
+            font-size: 15.5pt;
+            font-weight: 400;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        /* ── Green accent separator ── */
+        .separator {
+            width: 60%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+        .sep-line-left, .sep-line-right {
+            flex: 1;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, #4d8265);
+        }
+        .sep-line-right {
+            background: linear-gradient(90deg, #4d8265, transparent);
+        }
+        .sep-rx {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+            font-size: 13pt;
+            font-weight: 700;
+            color: #4d8265;
+            line-height: 1;
+        }
+
+        /* ── Document type ── */
+        .doc-type {
+            font-family: 'Source Serif 4', serif;
+            font-size: 17.5pt;
+            font-weight: 700;
+            text-align: center;
+            border-top: 2.2px solid #1a1a1a;
+            border-bottom: 2.2px solid #1a1a1a;
+            padding: 8px 32px;
+            letter-spacing: 3px;
+            margin-bottom: 26px;
+            display: inline-block;
+        }
+
+        /* ── Course Info ── */
+        .course-info {
+            width: 82%;
+            margin-bottom: 34px; /* More gap between course info and table */
+        }
+
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .course-table td {
+            font-size: 12.5pt;
+            padding: 4px 4px;
+            border: none;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .course-table .c-label {
+            white-space: nowrap;
+            min-width: 135px;
+        }
+
+        .course-table .c-colon {
+            width: 22px;
+            text-align: center;
+        }
+
+        /* ── People Table ── */
+        .people-table {
+            width: auto;       /* Shrink to content by default */
+            min-width: 82%;    /* But at least 82% wide */
+            max-width: 92%;    /* Expand up to 92% for long text */
+            border-collapse: collapse;
+            font-size: 12pt;
+            margin-top: 0;
+        }
+
+        .people-table th {
+            background: #f0f7f3;
+            font-family: 'Source Serif 4', serif;
+            font-size: 13.5pt;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px 14px;
+            border: 1.5px solid #333;
+            color: #111;
+        }
+
+        .people-table td {
+            border: 1.5px solid #333;
+            padding: 14px 16px;
+            vertical-align: top;
+            background: #fff;
+        }
+
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inner-table td {
+            border: none;
+            padding: 3.5px 0;
+            font-size: 12pt;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .inner-table .i-label {
+            min-width: 65px;
+            white-space: nowrap;
+        }
+
+        .inner-table .i-colon {
+            width: 14px;
+            text-align: center;
+            padding: 0 2px;
+        }
+
+        .to-name {
+            font-size: 12.5pt;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .to-detail {
+            font-size: 12pt;
+            line-height: 1.65;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="page-bg"></div>
+
+
+
+
+    <!-- Borders -->
+    <div class="border-outer"></div>
+    <div class="border-inner"></div>
+
+
+    <!-- ── Footer pharmacy icons ── -->
+    <div class="footer-strip">
+
+        <!-- 1. Mortar & Pestle -->
+        <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- pestle handle -->
+            <line x1="56" y1="12" x2="44" y2="28"/>
+            <!-- pestle head -->
+            <ellipse cx="57.5" cy="10.5" rx="4.5" ry="4.5"/>
+            <!-- mortar opening ellipse -->
+            <ellipse cx="40" cy="36" rx="24" ry="8"/>
+            <!-- mortar body -->
+            <path d="M16 36 Q15 58 40 62 Q65 58 64 36"/>
+            <!-- mortar base -->
+            <rect x="24" y="62" width="32" height="5" rx="2.5"/>
+            <!-- grinding lines inside -->
+            <path d="M30 42 Q40 40 50 42" stroke-width="1.2" stroke-dasharray="2,2"/>
+        </svg>
+
+        <div class="footer-vline"></div>
+
+        <!-- 2. Rx Prescription Bottle -->
+        <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- cap -->
+            <rect x="28" y="10" width="24" height="10" rx="3" stroke-width="2"/>
+            <!-- bottle body -->
+            <rect x="24" y="20" width="32" height="48" rx="5" stroke-width="2"/>
+            <!-- label rectangle -->
+            <rect x="28" y="30" width="24" height="20" rx="2" fill="#e8f5ee" stroke-width="1.5"/>
+            <!-- Rx text in label -->
+            <text x="40" y="45" font-family="serif" font-size="13" font-weight="bold"
+                  text-anchor="middle" fill="#4d8265" stroke="none" font-style="italic">Rx</text>
+            <!-- dots on bottle (pills inside) -->
+            <circle cx="34" cy="58" r="2.5" fill="#9abfaa" stroke="none"/>
+            <circle cx="40" cy="62" r="2.5" fill="#9abfaa" stroke="none"/>
+            <circle cx="46" cy="58" r="2.5" fill="#9abfaa" stroke="none"/>
+        </svg>
+
+        <div class="footer-vline"></div>
+
+        <!-- 3. Caduceus (pharmacy symbol) -->
+        <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Staff -->
+            <line x1="40" y1="10" x2="40" y2="72" stroke-width="2.5"/>
+            <!-- Wings -->
+            <path d="M40 18 C26 10 12 18 16 28 C20 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8"/>
+            <path d="M40 18 C54 10 68 18 64 28 C60 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8"/>
+            <!-- Left snake -->
+            <path d="M40 32 C28 40 52 52 40 62 C32 70 38 76 40 76"
+                  fill="none" stroke-width="2"/>
+            <!-- Right snake -->
+            <path d="M40 32 C52 40 28 52 40 62 C48 70 42 76 40 76"
+                  fill="none" stroke-width="2"/>
+            <!-- Top knob -->
+            <circle cx="40" cy="10" r="4" fill="#d6ede1"/>
+        </svg>
+
+        <div class="footer-vline"></div>
+
+        <!-- 4. Capsule / Pill -->
+        <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Capsule shape rotated 45° -->
+            <g transform="rotate(-40 40 40)">
+                <!-- Left half (filled) -->
+                <path d="M20 40 A20 14 0 0 1 40 26 L40 54 A20 14 0 0 1 20 40Z" fill="#d6ede1" stroke="#5a8a6e"/>
+                <!-- Right half -->
+                <path d="M60 40 A20 14 0 0 0 40 26 L40 54 A20 14 0 0 0 60 40Z" fill="#fff" stroke="#5a8a6e"/>
+                <!-- Dividing line -->
+                <line x1="40" y1="26" x2="40" y2="54" stroke-width="1.5"/>
+                <!-- shine -->
+                <path d="M26 33 Q32 30 36 32" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            </g>
+        </svg>
+
+        <div class="footer-vline"></div>
+
+        <!-- 5. Microscope -->
+        <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- eyepiece -->
+            <rect x="33" y="8" width="14" height="8" rx="3"/>
+            <!-- body tube -->
+            <rect x="35" y="16" width="10" height="16" rx="2"/>
+            <!-- revolving nosepiece -->
+            <rect x="30" y="32" width="20" height="7" rx="3"/>
+            <!-- objective lens -->
+            <rect x="35" y="39" width="10" height="8" rx="2"/>
+            <!-- arm -->
+            <path d="M40 47 L40 54"/>
+            <!-- stage -->
+            <rect x="22" y="54" width="36" height="5" rx="2"/>
+            <!-- stage clip -->
+            <path d="M34 54 L34 50 M46 54 L46 50" stroke-width="1.5"/>
+            <!-- base -->
+            <path d="M20 70 C22 62 38 60 40 60 C42 60 58 62 60 70"/>
+            <rect x="18" y="70" width="44" height="5" rx="3"/>
+            <!-- Mirror/light -->
+            <path d="M30 59 C27 63 28 68 30 68" stroke-width="1.5"/>
+        </svg>
+
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="page-content">
+
+        <img src="<%= logoSrc %>" class="logo" alt="MIU Logo">
+
+        <div class="uni-name">MANARAT INTERNATIONAL UNIVERSITY</div>
+        <div class="dept-name">Department of Pharmacy</div>
+
+        <!-- Square separator -->
+        <div class="separator">
+            <div class="sep-line-left"></div>
+            <div style="width:9px;height:9px;background:#4d8265;transform:rotate(45deg);flex-shrink:0;"></div>
+            <div class="sep-line-right"></div>
+        </div>
+
+        <div class="doc-type"><%= assignmentTitle %></div>
+
+        <!-- Course Info Block -->
+        <div class="course-info">
+            <table class="course-table" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="c-label">Course Title</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td><%= courseName %></td>
+                </tr>
+                <tr>
+                    <td class="c-label">Course Code</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td><%= courseCode %></td>
+                </tr>
+                <tr>
+                    <td class="c-label">Submission Date</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td><%= submissionDate %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Submitted by / to -->
+        <table class="people-table">
+            <tr>
+                <th style="width:50%">Submitted by</th>
+                <th style="width:50%">Submitted to</th>
+            </tr>
+            <tr>
+                <td>
+                    <table class="inner-table" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="i-label">Name</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentName %></td>
+                        </tr>
+                        <tr><td colspan="3" style="height:12px"></td></tr>
+                        <tr>
+                            <td class="i-label">Semester</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentSemester %></td>
+                        </tr>
+                        <tr>
+                            <td class="i-label">ID</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentId %></td>
+                        </tr>
+                        <tr>
+                            <td class="i-label">Batch</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentBatch %></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <div class="to-name"><%= teacherName %></div>
+                    <div class="to-detail">
+                        <%= teacherDesignation %>,<br>
+                        <%= teacherDepartment %><br>
+                        MIU
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</body>
+</html>
