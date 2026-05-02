@@ -54,7 +54,8 @@ app.post('/generate-pdf', async (req, res) => {
 
         // Set content and wait for it to be fully loaded
         await page.setContent(html, {
-            waitUntil: 'networkidle2'
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
         });
 
         const pdfBuffer = await page.pdf({
