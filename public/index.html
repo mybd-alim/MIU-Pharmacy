@@ -530,7 +530,7 @@
         
         let progress = 0;
         const updateProgress = (target, speed = 50) => {
-            return new setInterval(() => {
+            return setInterval(() => {
                 if (progress < target) {
                     progress += 1;
                     progressBar.style.width = `${progress}%`;
@@ -563,12 +563,13 @@
             progress = 100;
             progressBar.style.width = '100%';
             progressText.innerText = '100%';
-            loaderStatus.innerText = "Download starting...";
+            loaderStatus.innerText = "PDF Ready! Starting download...";
 
             // Get the blob and trigger download
             const blob = await response.blob();
+            if (blob.size === 0) throw new Error("Generated PDF is empty");
+
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
             
             // Try to get filename from header
             const contentDisposition = response.headers.get('Content-Disposition');
@@ -577,17 +578,32 @@
                 filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
             }
 
+            // Create download link
+            const a = document.createElement('a');
+            a.style.display = 'none';
             a.href = url;
             a.download = filename;
             document.body.appendChild(a);
+            
+            // Trigger download
             a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
+            
+            // For some mobile browsers, we show a success message or a manual link
+            loaderStatus.innerHTML = `Document ready. <a href="${url}" download="${filename}" style="color: var(--primary); text-decoration: underline;">Click here</a> if download didn't start.`;
+
+            // Cleanup
+            setTimeout(() => {
+                if (document.body.contains(a)) {
+                    a.remove();
+                }
+                // We keep the URL for the manual link for a bit
+            }, 10000);
 
             setTimeout(() => {
                 loaderOverlay.style.display = 'none';
                 submitBtn.disabled = false;
-            }, 1000);
+                window.URL.revokeObjectURL(url);
+            }, 15000); // Give user time to click if auto-download failed
 
         } catch (err) {
             clearInterval(progressInterval);

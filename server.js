@@ -40,7 +40,7 @@ app.post('/generate-pdf', async (req, res) => {
         // Launch Puppeteer and generate PDF
         browser = await puppeteer.launch({
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
-            headless: 'new', // Use the modern headless mode
+            headless: true, // Modern stable headless
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -48,23 +48,27 @@ app.post('/generate-pdf', async (req, res) => {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--no-zygote',
-                '--single-process',
                 '--disable-gpu',
                 '--disable-extensions',
-                '--font-render-hinting=none'
+                '--font-render-hinting=none',
+                '--disable-software-rasterizer'
             ]
         });
 
+        console.log('Browser launched successfully');
         const page = await browser.newPage();
+        console.log('New page created');
 
         // Optimize viewport for A4
         await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
 
         // Set content and wait for it to be fully loaded (including fonts/images)
+        console.log('Setting content...');
         await page.setContent(html, {
-            waitUntil: ['networkidle0', 'load', 'domcontentloaded'],
-            timeout: 60000 // 60 seconds
+            waitUntil: ['networkidle0', 'load'],
+            timeout: 60000 
         });
+        console.log('Content set, generating PDF...');
 
         const pdfBuffer = await page.pdf({
             format: 'A4',
