@@ -21,38 +21,56 @@ app.post('/generate-pdf', async (req, res) => {
         // No longer using background image as we are using CSS/SVG
 
 
-        // Read logo image as base64
-        const logoPath = path.join(__dirname, 'public', 'FinalLogo_PNG.png');
+        // Read the new optimized logo
+        const logoPath = path.join(__dirname, 'public', 'MUI_Logo.png');
         const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
         const logoSrc = `data:image/png;base64,${logoBase64}`;
 
         // Render EJS template to HTML string
         const html = await ejs.renderFile(path.join(__dirname, 'views', 'template.ejs'), {
             ...data,
-            bgImageSrc,
             logoSrc
         });
 
         // Launch Puppeteer and generate PDF
-        const browser = await puppeteer.launch({ headless: 'new' });
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        });
         const page = await browser.newPage();
-        await page.setContent(html, { waitUntil: 'networkidle0' });
+
+        // Optimize viewport for A4
+        await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
+
+        // Set content and wait for it to be fully loaded
+        await page.setContent(html, {
+            waitUntil: 'networkidle2'
+        });
+
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
-            margin: { top: '0', right: '0', bottom: '0', left: '0' }
+            margin: { top: '0', right: '0', bottom: '0', left: '0' },
+            preferCSSPageSize: true
         });
 
         await browser.close();
 
-        res.set({
+        const safeStudentName = (data.studentName || 'Student').replace(/[^a-z0-9]/gi, '_');
+        const safeAssignmentTitle = (data.assignmentTitle || 'Assignment').replace(/[^a-z0-9]/gi, '_');
+        const fileName = `${safeStudentName}_${safeAssignmentTitle}.pdf`;
+
+        res.writeHead(200, {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename="Cover_Page.pdf"'
+            'Content-Disposition': `attachment; filename="${fileName}"`,
+            'Content-Length': pdfBuffer.length
         });
-        res.send(pdfBuffer);
+        res.end(pdfBuffer);
     } catch (error) {
         console.error('Error generating PDF:', error);
-        res.status(500).send('Error generating PDF');
+        if (!res.headersSent) {
+            res.status(500).send('Error generating PDF');
+        }
     }
 });
 
