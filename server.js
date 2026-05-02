@@ -15,16 +15,21 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.post('/generate-pdf', async (req, res) => {
+    let browser = null;
     try {
         const data = req.body;
-
-        // No longer using background image as we are using CSS/SVG
-
+        console.log('Generating PDF for:', data.studentName, '-', data.assignmentTitle);
 
         // Read the new optimized logo
         const logoPath = path.join(__dirname, 'public', 'MUI_Logo.png');
-        const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
-        const logoSrc = `data:image/png;base64,${logoBase64}`;
+        let logoSrc = '';
+        try {
+            const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
+            logoSrc = `data:image/png;base64,${logoBase64}`;
+        } catch (logoError) {
+            console.error('Logo read error:', logoError);
+            // Fallback or handle missing logo if needed
+        }
 
         // Render EJS template to HTML string
         const html = await ejs.renderFile(path.join(__dirname, 'views', 'template.ejs'), {
@@ -33,9 +38,9 @@ app.post('/generate-pdf', async (req, res) => {
         });
 
         // Launch Puppeteer and generate PDF
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
-            headless: true,
+            headless: 'new', // Use the modern headless mode
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -44,18 +49,21 @@ app.post('/generate-pdf', async (req, res) => {
                 '--no-first-run',
                 '--no-zygote',
                 '--single-process',
-                '--disable-gpu'
+                '--disable-gpu',
+                '--disable-extensions',
+                '--font-render-hinting=none'
             ]
         });
+
         const page = await browser.newPage();
 
         // Optimize viewport for A4
         await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
 
-        // Set content and wait for it to be fully loaded
+        // Set content and wait for it to be fully loaded (including fonts/images)
         await page.setContent(html, {
-            waitUntil: 'domcontentloaded',
-            timeout: 60000
+            waitUntil: ['networkidle0', 'load', 'domcontentloaded'],
+            timeout: 60000 // 60 seconds
         });
 
         const pdfBuffer = await page.pdf({
@@ -65,22 +73,32 @@ app.post('/generate-pdf', async (req, res) => {
             preferCSSPageSize: true
         });
 
-        await browser.close();
-
         const safeStudentName = (data.studentName || 'Student').replace(/[^a-z0-9]/gi, '_');
         const safeAssignmentTitle = (data.assignmentTitle || 'Assignment').replace(/[^a-z0-9]/gi, '_');
         const fileName = `${safeStudentName}_${safeAssignmentTitle}.pdf`;
 
+        console.log(`Successfully generated: ${fileName} (${pdfBuffer.length} bytes)`);
+
         res.writeHead(200, {
             'Content-Type': 'application/pdf',
             'Content-Disposition': `attachment; filename="${fileName}"`,
-            'Content-Length': pdfBuffer.length
+            'Content-Length': pdfBuffer.length,
+            'Access-Control-Expose-Headers': 'Content-Disposition'
         });
         res.end(pdfBuffer);
+
     } catch (error) {
-        console.error('Error generating PDF:', error);
+        console.error('CRITICAL ERROR during PDF generation:', error);
         if (!res.headersSent) {
-            res.status(500).send('Error generating PDF: ' + error.message);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Error generating PDF', 
+                error: error.message 
+            });
+        }
+    } finally {
+        if (browser) {
+            await browser.close().catch(err => console.error('Error closing browser:', err));
         }
     }
 });

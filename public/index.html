@@ -206,9 +206,108 @@
                 padding: 20px;
             }
         }
+
+        /* Loader Styles */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .loader-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .loader-icon {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .loader-content h3 {
+            color: var(--secondary);
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .loader-content p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .animate-spin {
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+
+<!-- Loader Overlay -->
+<div id="loaderOverlay" class="loader-overlay" style="display: none;">
+    <div class="loader-card">
+        <div class="loader-icon">
+            <svg class="animate-spin" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+            </svg>
+        </div>
+        <div class="loader-content">
+            <h3>Generating PDF...</h3>
+            <p id="loaderStatus">Preparing your document</p>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="progressText" class="progress-text">0%</div>
+    </div>
+</div>
 
 <div class="container">
     <div class="header">
@@ -216,7 +315,7 @@
         <p>Fill out the details below. Suggestions will appear for courses and teachers.</p>
     </div>
 
-    <form action="/generate-pdf" method="POST">
+    <form id="pdfForm">
         
         <!-- Assignment Info -->
         <div class="form-section">
@@ -403,14 +502,105 @@
             </div>
         </div>
 
-        <button type="submit" class="submit-btn">
+        <button type="submit" class="submit-btn" id="submitBtn">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Generate & Download PDF
+            <span>Generate & Download PDF</span>
         </button>
     </form>
 </div>
 
 <script>
+    // --- Loader & AJAX Logic ---
+    const pdfForm = document.getElementById('pdfForm');
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const loaderStatus = document.getElementById('loaderStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    pdfForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Disable button and show loader
+        submitBtn.disabled = true;
+        loaderOverlay.style.display = 'flex';
+        
+        const formData = new FormData(pdfForm);
+        const data = Object.fromEntries(formData.entries());
+        
+        let progress = 0;
+        const updateProgress = (target, speed = 50) => {
+            return new setInterval(() => {
+                if (progress < target) {
+                    progress += 1;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.innerText = `${progress}%`;
+                    
+                    if (progress < 30) loaderStatus.innerText = "Initializing engine...";
+                    else if (progress < 60) loaderStatus.innerText = "Rendering document...";
+                    else if (progress < 90) loaderStatus.innerText = "Finalizing PDF...";
+                }
+            }, speed);
+        };
+
+        // Start simulated progress
+        let progressInterval = updateProgress(95, 100);
+
+        try {
+            const response = await fetch('/generate-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate PDF');
+            }
+
+            // Finish progress
+            clearInterval(progressInterval);
+            progress = 100;
+            progressBar.style.width = '100%';
+            progressText.innerText = '100%';
+            loaderStatus.innerText = "Download starting...";
+
+            // Get the blob and trigger download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            // Try to get filename from header
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = 'Cover_Page.pdf';
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
+            }
+
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+            setTimeout(() => {
+                loaderOverlay.style.display = 'none';
+                submitBtn.disabled = false;
+            }, 1000);
+
+        } catch (err) {
+            clearInterval(progressInterval);
+            loaderOverlay.style.display = 'none';
+            submitBtn.disabled = false;
+            alert('Error: ' + err.message);
+            console.error(err);
+        }
+    });
+
+
+    // --- Existing Auto-fill Logic ---
+
     // Set today's date formatted as DD-MM-YYYY
     const dateInput = document.getElementById('dateInput');
     const today = new Date();
