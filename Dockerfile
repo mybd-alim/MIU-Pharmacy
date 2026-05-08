@@ -1,31 +1,24 @@
-FROM node:20
+# Use official Puppeteer image which has Chrome and all dependencies pre-installed
+FROM ghcr.io/puppeteer/puppeteer:22.6.0
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    ca-certificates \
-    lsb-release \
-    xdg-utils \
-    --no-install-recommends
-
-# Install Google Chrome Stable
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg \
-    && sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
+# Set working directory
 WORKDIR /app
 
+# Copy package files first to leverage Docker layer caching
 COPY package*.json ./
+
+# Install dependencies
+# Note: The puppeteer image uses a non-root user 'pptruser' for security
+USER root
 RUN npm install
+USER pptruser
 
-COPY . .
+# Copy the rest of the application code
+COPY --chown=pptruser:pptruser . .
 
-# Set environment variable to skip Puppeteer's own download
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+# Environment variables for Puppeteer
+# The official image has the browser at a known location
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 
 EXPOSE 3001
 

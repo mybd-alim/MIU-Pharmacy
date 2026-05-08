@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +42,7 @@
             -webkit-backdrop-filter: blur(20px);
             padding: 40px;
             border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255,255,255,0.5) inset;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
             width: 100%;
             max-width: 800px;
             border: 1px solid rgba(255, 255, 255, 0.8);
@@ -159,7 +160,7 @@
             box-shadow: 0 0 0 4px rgba(0, 153, 77, 0.1);
         }
 
-        input:focus + label {
+        input:focus+label {
             color: var(--primary);
         }
 
@@ -202,6 +203,7 @@
             .input-grid {
                 grid-template-columns: 1fr;
             }
+
             .container {
                 padding: 20px;
             }
@@ -278,526 +280,552 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Loader Overlay -->
-<div id="loaderOverlay" class="loader-overlay" style="display: none;">
-    <div class="loader-card">
-        <div class="loader-icon">
-            <svg class="animate-spin" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
-            </svg>
+    <!-- Loader Overlay -->
+    <div id="loaderOverlay" class="loader-overlay" style="display: none;">
+        <div class="loader-card">
+            <div class="loader-icon">
+                <svg class="animate-spin" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                        d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83">
+                    </path>
+                </svg>
+            </div>
+            <div class="loader-content">
+                <h3>Generating PDF...</h3>
+                <p id="loaderStatus">Preparing your document</p>
+            </div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div id="progressText" class="progress-text">0%</div>
         </div>
-        <div class="loader-content">
-            <h3>Generating PDF...</h3>
-            <p id="loaderStatus">Preparing your document</p>
-        </div>
-        <div class="progress-container">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
-        <div id="progressText" class="progress-text">0%</div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="header">
-        <h2>Generate Cover Page</h2>
-        <p>Fill out the details below. Suggestions will appear for courses and teachers.</p>
     </div>
 
-    <form id="pdfForm">
-        
-        <!-- Assignment Info -->
-        <div class="form-section">
-            <div class="section-header">
-                <div class="section-icon">📄</div>
-                <div class="section-title">Assignment Details</div>
-            </div>
-            <div class="input-grid">
-                <div class="input-group full-width">
-                    <label>Assignment Title</label>
-                    <input type="text" name="assignmentTitle" list="assignment-titles" required placeholder="Select or type title...">
-                    <datalist id="assignment-titles">
-                        <option value="LAB REPORT">
-                        <option value="ASSIGNMENT">
-                        <option value="TERM PAPER">
-                        <option value="PROJECT PROPOSAL">
-                    </datalist>
-                </div>
-                <div class="input-group">
-                    <label>Course Name</label>
-                    <input type="text" id="courseNameInput" name="courseName" list="course-names" required placeholder="Select or type course...">
-                    <datalist id="course-names">
-                        <!-- 1st Year, 1st Semester -->
-                        <option value="Inorganic Pharmacy-I">
-                        <option value="Inorganic Pharmacy-I-Lab">
-                        <option value="Organic Pharmacy">
-                        <option value="Organic Pharmacy-Lab">
-                        <option value="Pharmacognosy-I">
-                        <option value="Pharmacognosy-I-Lab">
-                        <option value="Essential Computing">
-                        <!-- 1st Year, 2nd Semester -->
-                        <option value="Inorganic Pharmacy-II">
-                        <option value="Inorganic Pharmacy-II-Lab">
-                        <option value="Physical Pharmacy - I">
-                        <option value="Physical Pharmacy - I-Lab">
-                        <option value="Physiology - I">
-                        <option value="Physiology - I-Lab">
-                        <option value="Pharmaceutical Microbiology - I">
-                        <option value="Pharmaceutical Microbiology - I-Lab">
-                        <option value="Basic Anatomy">
-                        <option value="Oral Assessment-I">
-                        <!-- 2nd Year, 1st Semester -->
-                        <option value="Biochemistry & Molecular Biology">
-                        <option value="Biochem. & Molecular Biology-Lab">
-                        <option value="Physical Pharmacy - II">
-                        <option value="Physical Pharmacy - II-Lab">
-                        <option value="Physiology - II">
-                        <option value="Physiology - II-Lab">
-                        <option value="Pharmaceutical Microbiology-II">
-                        <option value="Pharmaceutical Microbiology-II-Lab">
-                        <option value="Basic Mathematics and Statistics">
-                        <!-- 2nd Year, 2nd Semester -->
-                        <option value="Pharmaceutical Analysis-I">
-                        <option value="Pharmaceutical Analysis-I-Lab">
-                        <option value="Pharmaceutical Technology-I">
-                        <option value="Pharmaceutical Technology-I-Lab">
-                        <option value="Pharmacognosy - II">
-                        <option value="Pharmacognosy - II-Lab">
-                        <option value="Pharmacology - I">
-                        <option value="Pharmacology - I-Lab">
-                        <option value="Pathology">
-                        <option value="Oral Assessment-II">
-                        <!-- 3rd Year, 1st Semester -->
-                        <option value="Medicinal Chemistry-I">
-                        <option value="Medicinal Chemistry-I-Lab">
-                        <option value="Pharmaceutical Technology-II">
-                        <option value="Pharmaceutical Technology-II-Lab">
-                        <option value="Biopharmaceutics and Pharmacokinetics-I">
-                        <option value="Biopharmaceutics and Pharmacokinetics-I-Lab">
-                        <option value="Pharmacology-II">
-                        <option value="Pharmacology-II-Lab">
-                        <option value="Pharmaceutical Marketing and Management">
-                        <!-- 3rd Year, 2nd Semester -->
-                        <option value="Pharmaceutical Analysis-II">
-                        <option value="Pharmaceutical Analysis-II-Lab">
-                        <option value="Medicinal Chemistry-II">
-                        <option value="Medicinal Chemistry-II-Lab">
-                        <option value="Biopharmaceutics and Pharmacokinetics-II">
-                        <option value="Biopharmaceutics and Pharmacokinetics-II-Lab">
-                        <option value="Pharmaceutical Engineering">
-                        <option value="Pharmacology-III">
-                        <option value="Pharmacology-III-Lab">
-                        <option value="Oral Assessment-III">
-                        <!-- 4th Year, 1st Semester -->
-                        <option value="Pharmaceutical Biotechnology">
-                        <option value="Medicinal Chemistry-III">
-                        <option value="Medicinal Chemistry-III-Lab">
-                        <option value="Pharmaceutical Technology - III">
-                        <option value="Cosmetology">
-                        <option value="Cosmetology-Lab">
-                        <option value="Clinical Pharmacy">
-                        <!-- 4th Year, 2nd Semester -->
-                        <option value="Advanced Pharmaceutical Analysis">
-                        <option value="Hospital and Community Pharmacy">
-                        <option value="Pharmaceutical Regulatory Affairs">
-                        <option value="Pharmacology-IV">
-                        <option value="Oral Assessment-IV">
-                        <!-- GED Courses -->
-                        <option value="English Fundamentals">
-                        <option value="Basic Concept of Islam">
-                        <option value="Composition and Communication Skills">
-                        <option value="Bangladesh Studies">
-                        <option value="Life and Teaching of Prophet Md. (PBUH)">
-                        <option value="Quranic Language">
-                        <option value="Quran Science and Humanity">
-                        <option value="Environment Studies">
-                    </datalist>
-                </div>
-                <div class="input-group">
-                    <label>Course Code</label>
-                    <input type="text" id="courseCodeInput" name="courseCode" required placeholder="e.g., 0916BPM1202">
-                    <div class="helper-text">Auto-fills when course is selected</div>
-                </div>
-                <div class="input-group full-width">
-                    <label>Date of Submission</label>
-                    <input type="text" name="submissionDate" id="dateInput" required placeholder="DD-MM-YYYY">
-                </div>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h2>Generate Cover Page</h2>
+            <p>Fill out the details below. Suggestions will appear for courses and teachers.</p>
         </div>
 
-        <!-- Teacher Info -->
-        <div class="form-section">
-            <div class="section-header">
-                <div class="section-icon">👨‍🏫</div>
-                <div class="section-title">Submitted To (Teacher Info)</div>
-            </div>
-            <div class="input-grid">
-                <div class="input-group full-width">
-                    <label>Teacher Name</label>
-                    <input type="text" id="teacherNameInput" name="teacherName" list="teacher-names" required placeholder="Select or type teacher name...">
-                    <datalist id="teacher-names">
-                        <option value="Mst. Boby Aktar Bithy">
-                        <option value="Mr. Muhammad Rakib Al Mamun">
-                        <option value="Md. Rezaul Karim">
-                        <option value="Mst. Rikta Banu">
-                        <option value="Mr. Mahedi Hasan">
-                        <option value="Prof. Dr. Choudhury Mahmood Hasan">
-                        <option value="Iffat Hasnin Era">
-                        <option value="Mst. Reshma Khatun">
-                        <option value="Shafayet Ahmed Siddiqui">
-                        <option value="Dr. Md. Ahad Ali Khan">
-                        <option value="Md. Nur Islam">
-                        <option value="Nilufar Sultana">
-                        <option value="Muslima Khatun">
-                        <option value="Nahid Hasan">
-                        <option value="Murshida Mollik">
-                        <option value="Mst. Jannatul Mewa">
-                    </datalist>
-                </div>
-                <div class="input-group">
-                    <label>Designation</label>
-                    <input type="text" id="teacherDesignationInput" name="teacherDesignation" required placeholder="e.g., Lecturer">
-                </div>
-                <div class="input-group">
-                    <label>Department</label>
-                    <input type="text" id="teacherDepartmentInput" name="teacherDepartment" required placeholder="e.g., Dept. of Pharmacy">
-                </div>
-            </div>
-        </div>
+        <form id="pdfForm">
 
-        <!-- Student Info -->
-        <div class="form-section">
-            <div class="section-header">
-                <div class="section-icon">🎓</div>
-                <div class="section-title">Submitted By (Student Info)</div>
+            <!-- Assignment Info -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">📄</div>
+                    <div class="section-title">Assignment Details</div>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group full-width">
+                        <label>Assignment Title</label>
+                        <input type="text" name="assignmentTitle" list="assignment-titles" required
+                            placeholder="Select or type title...">
+                        <datalist id="assignment-titles">
+                            <option value="LAB REPORT">
+                            <option value="ASSIGNMENT">
+                            <option value="TERM PAPER">
+                            <option value="PROJECT PROPOSAL">
+                        </datalist>
+                    </div>
+                    <div class="input-group">
+                        <label>Course Name</label>
+                        <input type="text" id="courseNameInput" name="courseName" list="course-names" required
+                            placeholder="Select or type course...">
+                        <datalist id="course-names">
+                            <!-- 1st Year, 1st Semester -->
+                            <option value="Inorganic Pharmacy-I">
+                            <option value="Inorganic Pharmacy-I-Lab">
+                            <option value="Organic Pharmacy">
+                            <option value="Organic Pharmacy-Lab">
+                            <option value="Pharmacognosy-I">
+                            <option value="Pharmacognosy-I-Lab">
+                            <option value="Essential Computing">
+                                <!-- 1st Year, 2nd Semester -->
+                            <option value="Inorganic Pharmacy-II">
+                            <option value="Inorganic Pharmacy-II-Lab">
+                            <option value="Physical Pharmacy - I">
+                            <option value="Physical Pharmacy - I-Lab">
+                            <option value="Physiology - I">
+                            <option value="Physiology - I-Lab">
+                            <option value="Pharmaceutical Microbiology - I">
+                            <option value="Pharmaceutical Microbiology - I-Lab">
+                            <option value="Basic Anatomy">
+                            <option value="Oral Assessment-I">
+                                <!-- 2nd Year, 1st Semester -->
+                            <option value="Biochemistry & Molecular Biology">
+                            <option value="Biochem. & Molecular Biology-Lab">
+                            <option value="Physical Pharmacy - II">
+                            <option value="Physical Pharmacy - II-Lab">
+                            <option value="Physiology - II">
+                            <option value="Physiology - II-Lab">
+                            <option value="Pharmaceutical Microbiology-II">
+                            <option value="Pharmaceutical Microbiology-II-Lab">
+                            <option value="Basic Mathematics and Statistics">
+                                <!-- 2nd Year, 2nd Semester -->
+                            <option value="Pharmaceutical Analysis-I">
+                            <option value="Pharmaceutical Analysis-I-Lab">
+                            <option value="Pharmaceutical Technology-I">
+                            <option value="Pharmaceutical Technology-I-Lab">
+                            <option value="Pharmacognosy - II">
+                            <option value="Pharmacognosy - II-Lab">
+                            <option value="Pharmacology - I">
+                            <option value="Pharmacology - I-Lab">
+                            <option value="Pathology">
+                            <option value="Oral Assessment-II">
+                                <!-- 3rd Year, 1st Semester -->
+                            <option value="Medicinal Chemistry-I">
+                            <option value="Medicinal Chemistry-I-Lab">
+                            <option value="Pharmaceutical Technology-II">
+                            <option value="Pharmaceutical Technology-II-Lab">
+                            <option value="Biopharmaceutics and Pharmacokinetics-I">
+                            <option value="Biopharmaceutics and Pharmacokinetics-I-Lab">
+                            <option value="Pharmacology-II">
+                            <option value="Pharmacology-II-Lab">
+                            <option value="Pharmaceutical Marketing and Management">
+                                <!-- 3rd Year, 2nd Semester -->
+                            <option value="Pharmaceutical Analysis-II">
+                            <option value="Pharmaceutical Analysis-II-Lab">
+                            <option value="Medicinal Chemistry-II">
+                            <option value="Medicinal Chemistry-II-Lab">
+                            <option value="Biopharmaceutics and Pharmacokinetics-II">
+                            <option value="Biopharmaceutics and Pharmacokinetics-II-Lab">
+                            <option value="Pharmaceutical Engineering">
+                            <option value="Pharmacology-III">
+                            <option value="Pharmacology-III-Lab">
+                            <option value="Oral Assessment-III">
+                                <!-- 4th Year, 1st Semester -->
+                            <option value="Pharmaceutical Biotechnology">
+                            <option value="Medicinal Chemistry-III">
+                            <option value="Medicinal Chemistry-III-Lab">
+                            <option value="Pharmaceutical Technology - III">
+                            <option value="Cosmetology">
+                            <option value="Cosmetology-Lab">
+                            <option value="Clinical Pharmacy">
+                                <!-- 4th Year, 2nd Semester -->
+                            <option value="Advanced Pharmaceutical Analysis">
+                            <option value="Hospital and Community Pharmacy">
+                            <option value="Pharmaceutical Regulatory Affairs">
+                            <option value="Pharmacology-IV">
+                            <option value="Oral Assessment-IV">
+                                <!-- GED Courses -->
+                            <option value="English Fundamentals">
+                            <option value="Basic Concept of Islam">
+                            <option value="Composition and Communication Skills">
+                            <option value="Bangladesh Studies">
+                            <option value="Life and Teaching of Prophet Md. (PBUH)">
+                            <option value="Quranic Language">
+                            <option value="Quran Science and Humanity">
+                            <option value="Environment Studies">
+                        </datalist>
+                    </div>
+                    <div class="input-group">
+                        <label>Course Code</label>
+                        <input type="text" id="courseCodeInput" name="courseCode" required
+                            placeholder="e.g., 0916BPM1202">
+                        <div class="helper-text">Auto-fills when course is selected</div>
+                    </div>
+                    <div class="input-group full-width">
+                        <label>Date of Submission</label>
+                        <input type="text" name="submissionDate" id="dateInput" required placeholder="DD-MM-YYYY">
+                    </div>
+                </div>
             </div>
-            <div class="input-grid">
-                <div class="input-group full-width">
-                    <label>Student Name</label>
-                    <input type="text" name="studentName" required placeholder="e.g., Naima Nishi">
+
+            <!-- Teacher Info -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👨‍🏫</div>
+                    <div class="section-title">Submitted To (Teacher Info)</div>
                 </div>
-                <div class="input-group">
-                    <label>Student Semester</label>
-                    <input type="text" name="studentSemester" required placeholder="e.g., Spring 2026">
-                </div>
-                <div class="input-group">
-                    <label>Student ID</label>
-                    <input type="text" name="studentId" required placeholder="e.g., 24515">
-                </div>
-                <div class="input-group">
-                    <label>Student Batch</label>
-                    <input type="text" name="studentBatch" required placeholder="e.g., 47">
+                <div class="input-grid">
+                    <div class="input-group full-width">
+                        <label>Teacher Name</label>
+                        <input type="text" id="teacherNameInput" name="teacherName" list="teacher-names" required
+                            placeholder="Select or type teacher name...">
+                        <datalist id="teacher-names">
+                            <option value="Mst. Boby Aktar Bithy">
+                            <option value="Mr. Muhammad Rakib Al Mamun">
+                            <option value="Md. Rezaul Karim">
+                            <option value="Mst. Rikta Banu">
+                            <option value="Mr. Mahedi Hasan">
+                            <option value="Prof. Dr. Choudhury Mahmood Hasan">
+                            <option value="Iffat Hasnin Era">
+                            <option value="Mst. Reshma Khatun">
+                            <option value="Shafayet Ahmed Siddiqui">
+                            <option value="Dr. Md. Ahad Ali Khan">
+                            <option value="Dr. Md. Nur Islam">
+                            <option value="Nilufar Sultana">
+                            <option value="Muslima Khatun">
+                            <option value="Nahid Hasan">
+                            <option value="Murshida Mollik">
+                            <option value="Mst. Jannatul Mewa">
+                        </datalist>
+                    </div>
+                    <div class="input-group">
+                        <label>Designation</label>
+                        <input type="text" id="teacherDesignationInput" name="teacherDesignation" required
+                            placeholder="e.g., Lecturer">
+                    </div>
+                    <div class="input-group">
+                        <label>Department</label>
+                        <input type="text" id="teacherDepartmentInput" name="teacherDepartment" required
+                            placeholder="e.g., Dept. of Pharmacy">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Generate & Download PDF</span>
-        </button>
-    </form>
-</div>
+            <!-- Student Info -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <div class="section-title">Submitted By (Student Info)</div>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group full-width">
+                        <label>Student Name</label>
+                        <input type="text" name="studentName" required placeholder="e.g., Naima Nishi">
+                    </div>
+                    <div class="input-group">
+                        <label>Student Semester</label>
+                        <input type="text" name="studentSemester" required placeholder="e.g., Spring 2026">
+                    </div>
+                    <div class="input-group">
+                        <label>Student ID</label>
+                        <input type="text" name="studentId" required placeholder="e.g., 24515">
+                    </div>
+                    <div class="input-group">
+                        <label>Student Batch</label>
+                        <input type="text" name="studentBatch" required placeholder="e.g., 47">
+                    </div>
+                </div>
+            </div>
 
-<script>
-    // --- Loader & AJAX Logic ---
-    const pdfForm = document.getElementById('pdfForm');
-    const loaderOverlay = document.getElementById('loaderOverlay');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const loaderStatus = document.getElementById('loaderStatus');
-    const submitBtn = document.getElementById('submitBtn');
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Generate & Download PDF</span>
+            </button>
+        </form>
+    </div>
 
-    pdfForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Disable button and show loader
-        submitBtn.disabled = true;
-        loaderOverlay.style.display = 'flex';
-        
-        const formData = new FormData(pdfForm);
-        const data = Object.fromEntries(formData.entries());
-        
-        let progress = 0;
-        const updateProgress = (target, speed = 50) => {
-            return setInterval(() => {
-                if (progress < target) {
-                    progress += 1;
-                    progressBar.style.width = `${progress}%`;
-                    progressText.innerText = `${progress}%`;
-                    
-                    if (progress < 30) loaderStatus.innerText = "Initializing engine...";
-                    else if (progress < 60) loaderStatus.innerText = "Rendering document...";
-                    else if (progress < 90) loaderStatus.innerText = "Finalizing PDF...";
+    <script>
+        // --- Loader & AJAX Logic ---
+        const pdfForm = document.getElementById('pdfForm');
+        const loaderOverlay = document.getElementById('loaderOverlay');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const loaderStatus = document.getElementById('loaderStatus');
+        const submitBtn = document.getElementById('submitBtn');
+
+        pdfForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Disable button and show loader
+            submitBtn.disabled = true;
+            loaderOverlay.style.display = 'flex';
+
+            const formData = new FormData(pdfForm);
+            const data = Object.fromEntries(formData.entries());
+
+            let progress = 0;
+            const updateProgress = (target, speed = 50) => {
+                return setInterval(() => {
+                    if (progress < target) {
+                        progress += 1;
+                        progressBar.style.width = `${progress}%`;
+                        progressText.innerText = `${progress}%`;
+
+                        if (progress < 30) loaderStatus.innerText = "Initializing engine...";
+                        else if (progress < 60) loaderStatus.innerText = "Rendering document...";
+                        else if (progress < 90) loaderStatus.innerText = "Finalizing PDF...";
+                    }
+                }, speed);
+            };
+
+            // Start simulated progress
+            let progressInterval = updateProgress(95, 100);
+
+            try {
+                const response = await fetch('/generate-pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate PDF');
                 }
-            }, speed);
-        };
 
-        // Start simulated progress
-        let progressInterval = updateProgress(95, 100);
+                // Finish progress
+                clearInterval(progressInterval);
+                progress = 100;
+                progressBar.style.width = '100%';
+                progressText.innerText = '100%';
+                loaderStatus.innerText = "PDF Ready! Starting download...";
 
-        try {
-            const response = await fetch('/generate-pdf', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+                // Get the blob and trigger download
+                const blob = await response.blob();
+                if (blob.size === 0) throw new Error("Generated PDF is empty");
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to generate PDF');
-            }
+                const url = window.URL.createObjectURL(blob);
 
-            // Finish progress
-            clearInterval(progressInterval);
-            progress = 100;
-            progressBar.style.width = '100%';
-            progressText.innerText = '100%';
-            loaderStatus.innerText = "PDF Ready! Starting download...";
-
-            // Get the blob and trigger download
-            const blob = await response.blob();
-            if (blob.size === 0) throw new Error("Generated PDF is empty");
-
-            const url = window.URL.createObjectURL(blob);
-            
-            // Try to get filename from header
-            const contentDisposition = response.headers.get('Content-Disposition');
-            let filename = 'Cover_Page.pdf';
-            if (contentDisposition && contentDisposition.includes('filename=')) {
-                filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
-            }
-
-            // Create download link
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            
-            // Trigger download
-            a.click();
-            
-            // For some mobile browsers, we show a success message or a manual link
-            loaderStatus.innerHTML = `Document ready. <a href="${url}" download="${filename}" style="color: var(--primary); text-decoration: underline;">Click here</a> if download didn't start.`;
-
-            // Cleanup
-            setTimeout(() => {
-                if (document.body.contains(a)) {
-                    a.remove();
+                // Try to get filename from header
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'Cover_Page.pdf';
+                if (contentDisposition && contentDisposition.includes('filename=')) {
+                    filename = contentDisposition.split('filename=')[1].replace(/"/g, '');
                 }
-                // We keep the URL for the manual link for a bit
-            }, 10000);
 
-            setTimeout(() => {
+                // Create download link
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+
+                // Trigger download
+                a.click();
+
+                // For some mobile browsers, we show a success message or a manual link
+                loaderStatus.innerHTML = `Document ready. <a href="${url}" download="${filename}" style="color: var(--primary); text-decoration: underline;">Click here</a> if download didn't start.`;
+
+                // Cleanup
+                setTimeout(() => {
+                    if (document.body.contains(a)) {
+                        a.remove();
+                    }
+                    // We keep the URL for the manual link for a bit
+                }, 10000);
+
+                setTimeout(() => {
+                    loaderOverlay.style.display = 'none';
+                    submitBtn.disabled = false;
+                    window.URL.revokeObjectURL(url);
+                }, 15000); // Give user time to click if auto-download failed
+
+            } catch (err) {
+                clearInterval(progressInterval);
                 loaderOverlay.style.display = 'none';
                 submitBtn.disabled = false;
-                window.URL.revokeObjectURL(url);
-            }, 15000); // Give user time to click if auto-download failed
-
-        } catch (err) {
-            clearInterval(progressInterval);
-            loaderOverlay.style.display = 'none';
-            submitBtn.disabled = false;
-            alert('Error: ' + err.message);
-            console.error(err);
-        }
-    });
+                alert('Error: ' + err.message);
+                console.error(err);
+            }
+        });
 
 
-    // --- Existing Auto-fill Logic ---
+        // --- Existing Auto-fill Logic ---
 
-    // Set today's date formatted as DD-MM-YYYY
-    const dateInput = document.getElementById('dateInput');
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    const yyyy = today.getFullYear();
-    dateInput.value = dd + '-' + mm + '-' + yyyy;
+        // Set today's date formatted as DD-MM-YYYY
+        const dateInput = document.getElementById('dateInput');
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        const yyyy = today.getFullYear();
+        dateInput.value = dd + '-' + mm + '-' + yyyy;
 
-    // Official MIU B.Pharm Course List with Exact Codes
-    const courses = {
-        // 1st Year, 1st Semester
-        "Inorganic Pharmacy-I":                       "BPM-111",
-        "Inorganic Pharmacy-I-Lab":                   "BPM-112",
-        "Organic Pharmacy":                           "BPM-113",
-        "Organic Pharmacy-Lab":                       "BPM-114",
-        "Pharmacognosy-I":                            "BPM-115",
-        "Pharmacognosy-I-Lab":                        "BPM-116",
-        "Essential Computing":                        "BPM-119",
-        // 1st Year, 2nd Semester
-        "Inorganic Pharmacy-II":                      "BPM-121",
-        "Inorganic Pharmacy-II-Lab":                  "BPM-122",
-        "Physical Pharmacy - I":                      "BPM-123",
-        "Physical Pharmacy - I-Lab":                  "BPM-124",
-        "Physiology - I":                             "BPM-125",
-        "Physiology - I-Lab":                         "BPM-126",
-        "Pharmaceutical Microbiology - I":            "BPM-127",
-        "Pharmaceutical Microbiology - I-Lab":        "BPM-128",
-        "Basic Anatomy":                              "BPM-131",
-        "Oral Assessment-I":                          "BPM-199",
-        // 2nd Year, 1st Semester
-        "Biochemistry & Molecular Biology":           "BPM-211",
-        "Biochem. & Molecular Biology-Lab":           "BPM-212",
-        "Physical Pharmacy - II":                     "BPM-213",
-        "Physical Pharmacy - II-Lab":                 "BPM-214",
-        "Physiology - II":                            "BPM-215",
-        "Physiology - II-Lab":                        "BPM-216",
-        "Pharmaceutical Microbiology-II":             "BPM-217",
-        "Pharmaceutical Microbiology-II-Lab":         "BPM-218",
-        "Basic Mathematics and Statistics":           "BPM-219",
-        // 2nd Year, 2nd Semester
-        "Pharmaceutical Analysis-I":                  "BPM-221",
-        "Pharmaceutical Analysis-I-Lab":              "BPM-222",
-        "Pharmaceutical Technology-I":                "BPM-223",
-        "Pharmaceutical Technology-I-Lab":            "BPM-224",
-        "Pharmacognosy - II":                         "BPM-225",
-        "Pharmacognosy - II-Lab":                     "BPM-226",
-        "Pharmacology - I":                           "BPM-227",
-        "Pharmacology - I-Lab":                       "BPM-228",
-        "Pathology":                                  "BPM-231",
-        "Oral Assessment-II":                         "BPM-299",
-        // 3rd Year, 1st Semester
-        "Medicinal Chemistry-I":                      "BPM-311",
-        "Medicinal Chemistry-I-Lab":                  "BPM-312",
-        "Pharmaceutical Technology-II":               "BPM-313",
-        "Pharmaceutical Technology-II-Lab":           "BPM-314",
-        "Biopharmaceutics and Pharmacokinetics-I":    "BPM-315",
-        "Biopharmaceutics and Pharmacokinetics-I-Lab":"BPM-316",
-        "Pharmacology-II":                            "BPM-317",
-        "Pharmacology-II-Lab":                        "BPM-318",
-        "Pharmaceutical Marketing and Management":    "BPM-319",
-        // 3rd Year, 2nd Semester
-        "Pharmaceutical Analysis-II":                 "BPM-321",
-        "Pharmaceutical Analysis-II-Lab":             "BPM-322",
-        "Medicinal Chemistry-II":                     "BPM-323",
-        "Medicinal Chemistry-II-Lab":                 "BPM-324",
-        "Biopharmaceutics and Pharmacokinetics-II":   "BPM-325",
-        "Biopharmaceutics and Pharmacokinetics-II-Lab":"BPM-326",
-        "Pharmaceutical Engineering":                 "BPM-327",
-        "Pharmacology-III":                           "BPM-427",
-        "Pharmacology-III-Lab":                       "BPM-428",
-        "Oral Assessment-III":                        "BPM-399",
-        // 4th Year, 1st Semester
-        "Pharmaceutical Biotechnology":               "BPM-411",
-        "Medicinal Chemistry-III":                    "BPM-413",
-        "Medicinal Chemistry-III-Lab":                "BPM-414",
-        "Pharmaceutical Technology - III":            "BPM-415",
-        "Cosmetology":                                "BPM-417",
-        "Cosmetology-Lab":                            "BPM-418",
-        "Clinical Pharmacy":                          "BPM-429",
-        // 4th Year, 2nd Semester
-        "Advanced Pharmaceutical Analysis":           "BPM-421",
-        "Hospital and Community Pharmacy":            "BPM-423",
-        "Pharmaceutical Regulatory Affairs":          "BPM-425",
-        "Pharmacology-IV":                            "BPM-431",
-        "Oral Assessment-IV":                         "BPM-499",
-        // GED Courses
-        "English Fundamentals":                       "GED-111",
-        "Basic Concept of Islam":                     "GED-122",
-        "Composition and Communication Skills":       "GED-213",
-        "Bangladesh Studies":                         "GED-224",
-        "Life and Teaching of Prophet Md. (PBUH)":    "GED-235",
-        "Quranic Language":                           "GED-316",
-        "Quran Science and Humanity":                 "GED-327",
-        "Environment Studies":                        "GED-338"
-    };
+        // Official MIU B.Pharm Course List with Exact Codes
+        const courses = {
+            // 1st Year, 1st Semester
+            "Inorganic Pharmacy-I": "BPM-111",
+            "Inorganic Pharmacy-I-Lab": "BPM-112",
+            "Organic Pharmacy": "BPM-113",
+            "Organic Pharmacy-Lab": "BPM-114",
+            "Pharmacognosy-I": "BPM-115",
+            "Pharmacognosy-I-Lab": "BPM-116",
+            "Essential Computing": "BPM-119",
+            // 1st Year, 2nd Semester
+            "Inorganic Pharmacy-II": "BPM-121",
+            "Inorganic Pharmacy-II-Lab": "BPM-122",
+            "Physical Pharmacy - I": "BPM-123",
+            "Physical Pharmacy - I-Lab": "BPM-124",
+            "Physiology - I": "BPM-125",
+            "Physiology - I-Lab": "BPM-126",
+            "Pharmaceutical Microbiology - I": "BPM-127",
+            "Pharmaceutical Microbiology - I-Lab": "BPM-128",
+            "Basic Anatomy": "BPM-131",
+            "Oral Assessment-I": "BPM-199",
+            // 2nd Year, 1st Semester
+            "Biochemistry & Molecular Biology": "BPM-211",
+            "Biochem. & Molecular Biology-Lab": "BPM-212",
+            "Physical Pharmacy - II": "BPM-213",
+            "Physical Pharmacy - II-Lab": "BPM-214",
+            "Physiology - II": "BPM-215",
+            "Physiology - II-Lab": "BPM-216",
+            "Pharmaceutical Microbiology-II": "BPM-217",
+            "Pharmaceutical Microbiology-II-Lab": "BPM-218",
+            "Basic Mathematics and Statistics": "BPM-219",
+            // 2nd Year, 2nd Semester
+            "Pharmaceutical Analysis-I": "BPM-221",
+            "Pharmaceutical Analysis-I-Lab": "BPM-222",
+            "Pharmaceutical Technology-I": "BPM-223",
+            "Pharmaceutical Technology-I-Lab": "BPM-224",
+            "Pharmacognosy - II": "BPM-225",
+            "Pharmacognosy - II-Lab": "BPM-226",
+            "Pharmacology - I": "BPM-227",
+            "Pharmacology - I-Lab": "BPM-228",
+            "Pathology": "BPM-231",
+            "Oral Assessment-II": "BPM-299",
+            // 3rd Year, 1st Semester
+            "Medicinal Chemistry-I": "BPM-311",
+            "Medicinal Chemistry-I-Lab": "BPM-312",
+            "Pharmaceutical Technology-II": "BPM-313",
+            "Pharmaceutical Technology-II-Lab": "BPM-314",
+            "Biopharmaceutics and Pharmacokinetics-I": "BPM-315",
+            "Biopharmaceutics and Pharmacokinetics-I-Lab": "BPM-316",
+            "Pharmacology-II": "BPM-317",
+            "Pharmacology-II-Lab": "BPM-318",
+            "Pharmaceutical Marketing and Management": "BPM-319",
+            // 3rd Year, 2nd Semester
+            "Pharmaceutical Analysis-II": "BPM-321",
+            "Pharmaceutical Analysis-II-Lab": "BPM-322",
+            "Medicinal Chemistry-II": "BPM-323",
+            "Medicinal Chemistry-II-Lab": "BPM-324",
+            "Biopharmaceutics and Pharmacokinetics-II": "BPM-325",
+            "Biopharmaceutics and Pharmacokinetics-II-Lab": "BPM-326",
+            "Pharmaceutical Engineering": "BPM-327",
+            "Pharmacology-III": "BPM-427",
+            "Pharmacology-III-Lab": "BPM-428",
+            "Oral Assessment-III": "BPM-399",
+            // 4th Year, 1st Semester
+            "Pharmaceutical Biotechnology": "BPM-411",
+            "Medicinal Chemistry-III": "BPM-413",
+            "Medicinal Chemistry-III-Lab": "BPM-414",
+            "Pharmaceutical Technology - III": "BPM-415",
+            "Cosmetology": "BPM-417",
+            "Cosmetology-Lab": "BPM-418",
+            "Clinical Pharmacy": "BPM-429",
+            // 4th Year, 2nd Semester
+            "Advanced Pharmaceutical Analysis": "BPM-421",
+            "Hospital and Community Pharmacy": "BPM-423",
+            "Pharmaceutical Regulatory Affairs": "BPM-425",
+            "Pharmacology-IV": "BPM-431",
+            "Oral Assessment-IV": "BPM-499",
+            // GED Courses
+            "English Fundamentals": "GED-111",
+            "Basic Concept of Islam": "GED-122",
+            "Composition and Communication Skills": "GED-213",
+            "Bangladesh Studies": "GED-224",
+            "Life and Teaching of Prophet Md. (PBUH)": "GED-235",
+            "Quranic Language": "GED-316",
+            "Quran Science and Humanity": "GED-327",
+            "Environment Studies": "GED-338"
+        };
 
-    // All MIU Pharmacy Department Faculty
-    const teachers = {
-        "Mst. Boby Aktar Bithy": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Mr. Muhammad Rakib Al Mamun": {
-            designation: "Assistant Professor",
-            department: "Dept. of Pharmacy"
-        },
-        "Md. Rezaul Karim": {
-            designation: "Assistant Professor",
-            department: "Dept. of Pharmacy"
-        },
-        "Mst. Rikta Banu": {
-            designation: "Assistant Professor & Program Coordinator",
-            department: "Dept. of Pharmacy"
-        },
-        "Mr. Mahedi Hasan": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Prof. Dr. Choudhury Mahmood Hasan": {
-            designation: "Professor Emeritus",
-            department: "Dept. of Pharmacy"
-        },
-        "Iffat Hasnin Era": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Mst. Reshma Khatun": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Shafayet Ahmed Siddiqui": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Dr. Md. Ahad Ali Khan": {
-            designation: "Assistant Professor",
-            department: "Dept. of Pharmacy"
-        },
-        "Md. Nur Islam": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Nilufar Sultana": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Muslima Khatun": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Nahid Hasan": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Murshida Mollik": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        },
-        "Mst. Jannatul Mewa": {
-            designation: "Lecturer",
-            department: "Dept. of Pharmacy"
-        }
-    };
+        // All MIU Pharmacy Department Faculty
+        const teachers = {
+            "Mst. Boby Aktar Bithy": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Mr. Muhammad Rakib Al Mamun": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Md. Rezaul Karim": {
+                designation: "Associate Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Mst. Rikta Banu": {
+                designation: "Assistant Professor & Program Coordinator",
+                department: "Dept. of Pharmacy"
+            },
+            "Mr. Mahedi Hasan": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Prof. Dr. Choudhury Mahmood Hasan": {
+                designation: "Professor Emeritus",
+                department: "Dept. of Pharmacy"
+            },
+            "Iffat Hasnin Era": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Mst. Reshma Khatun": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Shafayet Ahmed Siddiqui": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Dr. Md. Ahad Ali Khan": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Dr. Md. Nur Islam": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Nilufar Sultana": {
+                designation: "Assistant Professor",
+                department: "Dept. of Pharmacy"
+            },
+            "Muslima Khatun": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Nahid Hasan": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Murshida Mollik": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            },
+            "Mst. Jannatul Mewa": {
+                designation: "Lecturer",
+                department: "Dept. of Pharmacy"
+            }
+        };
 
-    // Listeners for Course Auto-fill
-    document.getElementById('courseNameInput').addEventListener('input', function(e) {
-        const val = e.target.value;
-        if (courses[val]) {
-            document.getElementById('courseCodeInput').value = courses[val];
-        }
-    });
+        // Listeners for Course Auto-fill
+        document.getElementById('courseNameInput').addEventListener('input', function (e) {
+            const val = e.target.value;
+            if (courses[val]) {
+                document.getElementById('courseCodeInput').value = courses[val];
+            }
+        });
 
-    // Listeners for Teacher Auto-fill
-    document.getElementById('teacherNameInput').addEventListener('input', function(e) {
-        const val = e.target.value;
-        if (teachers[val]) {
-            document.getElementById('teacherDesignationInput').value = teachers[val].designation;
-            document.getElementById('teacherDepartmentInput').value = teachers[val].department;
-        }
-    });
-</script>
+        // Listeners for Teacher Auto-fill
+        document.getElementById('teacherNameInput').addEventListener('input', function (e) {
+            const val = e.target.value;
+            if (teachers[val]) {
+                document.getElementById('teacherDesignationInput').value = teachers[val].designation;
+                document.getElementById('teacherDepartmentInput').value = teachers[val].department;
+            }
+        });
+    </script>
 
 </body>
+
 </html>
