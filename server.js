@@ -13,8 +13,52 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+let browserInstance;
+let browserLaunchPromise;
+
+async function getBrowser() {
+    if (browserInstance?.connected) {
+        return browserInstance;
+    }
+
+    if (!browserLaunchPromise) {
+        browserLaunchPromise = (async () => {
+            const { default: puppeteer } = await import('puppeteer');
+            return puppeteer.launch({
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--no-first-run',
+                    '--no-zygote',
+                    '--disable-gpu',
+                    '--disable-extensions',
+                    '--font-render-hinting=none',
+                    '--disable-software-rasterizer',
+                    '--js-flags="--max-old-space-size=256"'
+                ]
+            });
+        })();
+    }
+
+    try {
+        const browser = await browserLaunchPromise;
+        browserInstance = browser;
+        browserInstance.on('disconnected', () => {
+            if (browserInstance === browser) {
+                browserInstance = null;
+            }
+        });
+        return browser;
+    } finally {
+        browserLaunchPromise = null;
+    }
+}
+
 app.post('/generate-pdf', async (req, res) => {
-    let browser = null;
+    let page = null;
     try {
         const data = req.body;
         console.log('Generating PDF for:', data.studentName, '-', data.assignmentTitle);
@@ -36,29 +80,8 @@ app.post('/generate-pdf', async (req, res) => {
             logoSrc
         });
 
-        console.log('Launching browser using Puppeteer-managed Chrome');
-
-        // Launch Puppeteer and generate PDF
-        const puppeteer = await import('puppeteer');
-        browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                '--no-zygote',
-                '--disable-gpu',
-                '--disable-extensions',
-                '--font-render-hinting=none',
-                '--disable-software-rasterizer',
-                '--js-flags="--max-old-space-size=256"' // Limit memory usage
-            ]
-        });
-
-        console.log('Browser launched successfully');
-        const page = await browser.newPage();
+        const browser = await getBrowser();
+        page = await browser.newPage();
         
         // Optimize viewport for A4
         await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
@@ -69,9 +92,6 @@ app.post('/generate-pdf', async (req, res) => {
             waitUntil: 'load', // Faster than networkidle0
             timeout: 45000 
         });
-
-        // Small delay to ensure styles/fonts are applied if 'load' was too fast
-        await new Promise(resolve => setTimeout(resolve, 500));
 
         console.log('Generating PDF...');
         const pdfBuffer = await page.pdf({
@@ -105,8 +125,8 @@ app.post('/generate-pdf', async (req, res) => {
             });
         }
     } finally {
-        if (browser) {
-            await browser.close().catch(err => console.error('Error closing browser:', err));
+        if (page) {
+            await page.close().catch(err => console.error('Error closing page:', err));
         }
     }
 });
