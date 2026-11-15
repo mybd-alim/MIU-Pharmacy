@@ -36,33 +36,11 @@ app.post('/generate-pdf', async (req, res) => {
             logoSrc
         });
 
-        // Cross-platform executable path logic
-        const isWindows = process.platform === 'win32';
-        let chromePath = isWindows ? null : '/usr/bin/google-chrome-stable';
-        
-        // If on Windows and no path provided, try to find local Chrome as fallback
-        if (isWindows && !process.env.PUPPETEER_EXECUTABLE_PATH) {
-            const winPaths = [
-                'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-                'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-                process.env.LOCALAPPDATA + '\\Google\\Chrome\\Application\\chrome.exe'
-            ];
-            for (const p of winPaths) {
-                if (fs.existsSync(p)) {
-                    chromePath = p;
-                    break;
-                }
-            }
-        }
-
-        const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || chromePath;
-
-        console.log(`Launching browser using path: ${executablePath || 'bundled puppeteer'}`);
+        console.log('Launching browser using Puppeteer-managed Chrome');
 
         // Launch Puppeteer and generate PDF
         const puppeteer = await import('puppeteer');
         browser = await puppeteer.launch({
-            executablePath: executablePath,
             headless: true,
             args: [
                 '--no-sandbox',

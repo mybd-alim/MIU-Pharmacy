@@ -16,10 +16,6 @@ USER pptruser
 # Copy the rest of the application code
 COPY --chown=pptruser:pptruser . .
 
-# Environment variables for Puppeteer
-# The official image has the browser at a known location
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
-
 EXPOSE 3001
 
 CMD ["node", "server.js"]
