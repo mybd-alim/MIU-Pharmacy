@@ -1,5 +1,4 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
 const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs');
@@ -61,6 +60,7 @@ app.post('/generate-pdf', async (req, res) => {
         console.log(`Launching browser using path: ${executablePath || 'bundled puppeteer'}`);
 
         // Launch Puppeteer and generate PDF
+        const puppeteer = await import('puppeteer');
         browser = await puppeteer.launch({
             executablePath: executablePath,
             headless: true,
