@@ -411,22 +411,24 @@
         <!-- Submitted by / to -->
         <table class="people-table">
             <tr>
-                <th style="width:50%">Submitted by</th>
                 <th style="width:50%">Submitted to</th>
+                <th style="width:50%">Submitted by</th>
             </tr>
             <tr>
+                <td>
+                    <div class="to-name"><%= teacherName %></div>
+                    <div class="to-detail">
+                        <%= teacherDesignation %>,<br>
+                        <%= teacherDepartment %><br>
+                        MIU
+                    </div>
+                </td>
                 <td>
                     <table class="inner-table" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="i-label">Name</td>
                             <td class="i-colon">&nbsp;:&nbsp;</td>
                             <td><%= studentName %></td>
-                        </tr>
-                        <tr><td colspan="3" style="height:12px"></td></tr>
-                        <tr>
-                            <td class="i-label">Semester</td>
-                            <td class="i-colon">&nbsp;:&nbsp;</td>
-                            <td><%= studentSemester %></td>
                         </tr>
                         <tr>
                             <td class="i-label">ID</td>
@@ -438,15 +440,17 @@
                             <td class="i-colon">&nbsp;:&nbsp;</td>
                             <td><%= studentBatch %></td>
                         </tr>
+                        <tr>
+                            <td class="i-label">Session</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentSession %></td>
+                        </tr>
+                        <tr>
+                            <td class="i-label">Semester</td>
+                            <td class="i-colon">&nbsp;:&nbsp;</td>
+                            <td><%= studentSemester %></td>
+                        </tr>
                     </table>
-                </td>
-                <td>
-                    <div class="to-name"><%= teacherName %></div>
-                    <div class="to-detail">
-                        <%= teacherDesignation %>,<br>
-                        <%= teacherDepartment %><br>
-                        MIU
-                    </div>
                 </td>
             </tr>
         </table>
