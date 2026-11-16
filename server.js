@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3001;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
+app.get('/logo.png', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'MUI_Logo.png'));
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

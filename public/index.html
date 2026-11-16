@@ -1,477 +1,1296 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MIU Cover Page Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f4f5f7; --card:#fff; --ink:#0f172a; --muted:#64748b; --line:#e3e7ee; --field:#f8fafc;
-  --accent:#0b7a5a; --accent-h:#096348; --accent-t:#e7f5ef; --desk:#e4e8ee; --shadow:0 1px 2px rgba(15,23,42,.05),0 8px 24px -12px rgba(15,23,42,.12);
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root{--bg:#0b0f14; --card:#121821; --ink:#e8edf4; --muted:#93a1b5; --line:#233044; --field:#0e141c; --accent:#34d399; --accent-h:#6ee7b7; --accent-t:#10291f; --desk:#070a0e; --shadow:none; color-scheme:dark;}
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;min-height:100vh}
-button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MIU Cover Page Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #fff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e3e7ee;
+      --field: #f8fafc;
+      --accent: #0b7a5a;
+      --accent-h: #096348;
+      --accent-t: #e7f5ef;
+      --desk: #e4e8ee;
+      --shadow: 0 1px 2px rgba(15, 23, 42, .05), 0 8px 24px -12px rgba(15, 23, 42, .12);
+      color-scheme: light;
+    }
 
-/* Header */
-.head{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.head-in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px}
-.mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
-.head h1{font-size:16px;font-weight:600;line-height:1.2}
-.head p{font-size:12.5px;color:var(--muted)}
-.tabs{display:none;margin-left:auto;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:3px}
-.tabs{position:relative}
-.tabs::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:7px;background:var(--accent);transition:transform .25s ease}
-body[data-tab=preview] .tabs::before{transform:translateX(100%)}
-.tabs button{position:relative;z-index:1;flex:1;border:0;background:none;color:var(--muted);padding:6px 14px;border-radius:7px;font-size:13.5px;font-weight:500;transition:color .2s ease}
-.tabs button[aria-selected=true]{color:#fff}
-.tabs button:hover{color:var(--accent)}
-.tabs button[aria-selected=true]:hover{color:#fff}
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --bg: #0b0f14;
+        --card: #121821;
+        --ink: #e8edf4;
+        --muted: #93a1b5;
+        --line: #233044;
+        --field: #0e141c;
+        --accent: #34d399;
+        --accent-h: #6ee7b7;
+        --accent-t: #10291f;
+        --desk: #070a0e;
+        --shadow: none;
+        color-scheme: dark;
+      }
+    }
 
-/* Layout */
-.layout{max-width:1240px;margin:0 auto;padding:24px 20px 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:28px;align-items:start}
-form{display:flex;flex-direction:column;gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
-.card h2{font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.card h2 svg{width:30px;height:30px;padding:6px;border-radius:8px;background:var(--accent-t);color:var(--accent);flex:none}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.full{grid-column:1/-1}
-.field{display:flex;flex-direction:column;gap:6px;min-width:0;position:relative}
-label{font-size:13px;font-weight:500}
-input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:11px 13px;min-height:46px;transition:border-color .15s,box-shadow .15s}
-input::placeholder{color:var(--muted);opacity:.7}
-input:hover{border-color:var(--muted)}
-input:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);background:var(--card)}
-.hint{font-size:12px;color:var(--muted)}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* Date + calendar */
-.date-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:11px 13px;min-height:46px;color:var(--ink);font-size:16px}
-.date-btn:hover{border-color:var(--muted)}
-.date-btn:focus-visible,.date-btn[aria-expanded=true]{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
-.date-btn svg{width:20px;height:20px;color:var(--accent);flex:none}
-.date-btn span{flex:1}
-.cal{position:absolute;top:calc(100% + 6px);left:0;z-index:30;width:296px;max-width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 20px 40px -12px rgba(15,23,42,.3);display:none}
-.cal.on{display:block}
-.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cal-top b{font-size:14.5px;font-weight:600}
-.nav{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--field);color:var(--ink);display:grid;place-items:center}
-.nav:hover{border-color:var(--accent);color:var(--accent)}
-.dows,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
-.dows span{font-size:11.5px;color:var(--muted);padding:4px 0;font-weight:500}
-.day{aspect-ratio:1;border:0;background:none;color:var(--ink);border-radius:8px;font-size:13.5px}
-.day:hover{background:var(--accent-t)}
-.day.out{color:var(--muted);opacity:.45}
-.day.today{box-shadow:inset 0 0 0 1.5px var(--accent)}
-.day.sel{background:var(--accent);color:#fff;font-weight:600}
-.cal-foot{display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
-.link{border:0;background:none;color:var(--accent);font-size:13px;font-weight:600;padding:4px 6px;border-radius:6px}
-.link:hover{background:var(--accent-t)}
+    html {
+      -webkit-text-size-adjust: 100%
+    }
 
-.submit{display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 22px;transition:background .15s}
-@media (prefers-color-scheme:dark){.submit{color:#06281c}}
-.submit:hover{background:var(--accent-h)}
-.submit:disabled{opacity:.6;cursor:wait}
-.submit:focus-visible,.link:focus-visible,.nav:focus-visible,.day:focus-visible,.tabs button:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh
+    }
 
-/* Preview desk */
-.preview{position:sticky;top:76px}
-.desk{background:var(--desk);border-radius:16px;padding:18px;border:1px solid var(--line)}
-.desk-label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:12px;font-weight:500}
-.stage{width:100%;position:relative;overflow:hidden;border-radius:4px;box-shadow:0 14px 36px -10px rgba(0,0,0,.35)}
+    button {
+      font: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none
+    }
 
-/* ========= PDF TEMPLATE REPLICA (from template.ejs, scoped to .paper) ========= */
-.paper{width:210mm;height:297mm;background:#fbfcfa;position:absolute;top:0;left:0;transform-origin:top left;overflow:hidden;font-family:'Source Serif 4','Times New Roman',Georgia,serif;color:#111;text-align:left;line-height:normal}
-.paper *{box-sizing:border-box;margin:0;padding:0;font-family:inherit}
-.paper .border-outer{position:absolute;top:13mm;left:13mm;right:13mm;bottom:13mm;border:2.2px solid #4d8265;border-radius:10px}
-.paper .border-inner{position:absolute;top:15.5mm;left:15.5mm;right:15.5mm;bottom:15.5mm;border:.8px solid #9abfaa;border-radius:7px}
-.paper .footer-strip{position:absolute;bottom:15.5mm;left:15.5mm;right:15.5mm;height:28mm;display:flex;align-items:center;justify-content:space-around;border-top:1px solid #c2d9cb;padding-top:6px}
-.paper .footer-strip svg{width:58px;height:58px}
-.paper .footer-vline{width:1px;height:44px;background:#c2d9cb}
-.paper .page-content{position:absolute;top:16mm;left:16mm;right:16mm;bottom:43mm;display:flex;flex-direction:column;align-items:center}
-.paper .logo{width:125px;margin-top:16px;margin-bottom:14px;display:block}
-.paper .logo-ph{width:125px;height:100px;margin-top:16px;margin-bottom:14px;border:1.5px dashed #9abfaa;border-radius:10px;display:grid;place-items:center;color:#9abfaa;font:600 14pt 'Source Sans 3',sans-serif}
-.paper .uni-name{font-family:'Source Sans 3',Arial,sans-serif;color:#00994d;font-size:21.5pt;font-weight:700;text-align:center;letter-spacing:.6px;margin-bottom:7px}
-.paper .dept-name{font-size:15.5pt;font-weight:400;color:#222;margin-bottom:10px}
-.paper .separator{width:60%;display:flex;align-items:center;gap:8px;margin-bottom:22px}
-.paper .sep-line-left,.paper .sep-line-right{flex:1;height:1.5px;background:linear-gradient(90deg,transparent,#4d8265)}
-.paper .sep-line-right{background:linear-gradient(90deg,#4d8265,transparent)}
-.paper .doc-type{font-size:17.5pt;font-weight:700;text-align:center;border-top:2.2px solid #1a1a1a;border-bottom:2.2px solid #1a1a1a;padding:8px 32px;letter-spacing:3px;margin-bottom:26px;display:inline-block}
-.paper .course-info{width:82%;margin-bottom:34px}
-.paper .course-table,.paper .inner-table{width:100%;border-collapse:collapse}
-.paper .course-table td{font-size:12.5pt;padding:4px;border:none;vertical-align:top;line-height:1.5}
-.paper .c-label{white-space:nowrap;min-width:135px}
-.paper .c-colon{width:22px;text-align:center}
-.paper .people-table{width:auto;min-width:82%;max-width:92%;border-collapse:collapse;font-size:12pt}
-.paper .people-table th{background:#f0f7f3;font-size:13.5pt;font-weight:700;text-align:center;padding:10px 14px;border:1.5px solid #333;color:#111}
-.paper .people-table td{border:1.5px solid #333;padding:14px 16px;vertical-align:top;background:#fff}
-.paper .inner-table td{border:none;padding:3.5px 0;font-size:12pt;vertical-align:top;line-height:1.5;background:none}
-.paper .i-label{min-width:65px;white-space:nowrap}
-.paper .i-colon{width:14px;text-align:center;padding:0 2px}
-.paper .to-name{font-size:12.5pt;font-weight:600;margin-bottom:6px}
-.paper .to-detail{font-size:12pt;line-height:1.65}
-.paper .ph{color:#a9b4ae}
-/* ========= END REPLICA ========= */
+    /* Header */
+    .head {
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 20
+    }
 
-.overlay{position:fixed;inset:0;background:rgba(8,12,18,.6);backdrop-filter:blur(6px);display:none;place-items:center;z-index:60;padding:20px}
-.overlay.on{display:grid}
-.modal{background:var(--card);border-radius:18px;padding:28px;width:100%;max-width:360px;text-align:center}
-.modal h3{font-size:17px;margin-bottom:4px}
-.modal p{font-size:14px;color:var(--muted);margin-bottom:18px}
-.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
-.modal a{color:var(--accent)}
+    .head-in {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
 
-@media (max-width:960px){
-  .layout{grid-template-columns:1fr;padding:16px 14px 48px}
-  .tabs{display:flex}
-  .preview{position:static;display:none;max-width:560px;margin:0 auto;width:100%}
-  body[data-tab=preview] .preview{display:block}
-  body[data-tab=preview] form{display:none}
-}
-@media (max-width:560px){
-  .grid{grid-template-columns:1fr}
-  .card{padding:16px}
-  .head p{display:none}
-  .cal{width:100%}
-}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
+    .mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex: none
+    }
+
+    .head h1 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2
+    }
+
+    .head p {
+      font-size: 12.5px;
+      color: var(--muted)
+    }
+
+    .tabs {
+      display: none;
+      margin-left: auto;
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 3px
+    }
+
+    .tabs {
+      position: relative
+    }
+
+    .tabs::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      border-radius: 7px;
+      background: var(--accent);
+      transition: transform .25s ease
+    }
+
+    body[data-tab=preview] .tabs::before {
+      transform: translateX(100%)
+    }
+
+    .tabs button {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: color .2s ease
+    }
+
+    .tabs button[aria-selected=true] {
+      color: #fff
+    }
+
+    .tabs button:hover {
+      color: var(--accent)
+    }
+
+    .tabs button[aria-selected=true]:hover {
+      color: #fff
+    }
+
+    /* Layout */
+    .layout {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+      gap: 28px;
+      align-items: start
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow)
+    }
+
+    .card h2 {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px
+    }
+
+    .card h2 svg {
+      width: 30px;
+      height: 30px;
+      padding: 6px;
+      border-radius: 8px;
+      background: var(--accent-t);
+      color: var(--accent);
+      flex: none
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px
+    }
+
+    .full {
+      grid-column: 1/-1
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      position: relative
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    input {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      color: var(--ink);
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 13px;
+      min-height: 46px;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    input::placeholder {
+      color: var(--muted);
+      opacity: .7
+    }
+
+    input:hover {
+      border-color: var(--muted)
+    }
+
+    input:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+      background: var(--card)
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    /* Date + calendar */
+    .date-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 13px;
+      min-height: 46px;
+      color: var(--ink);
+      font-size: 16px
+    }
+
+    .date-btn:hover {
+      border-color: var(--muted)
+    }
+
+    .date-btn:focus-visible,
+    .date-btn[aria-expanded=true] {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)
+    }
+
+    .date-btn svg {
+      width: 20px;
+      height: 20px;
+      color: var(--accent);
+      flex: none
+    }
+
+    .date-btn span {
+      flex: 1
+    }
+
+    .cal {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 30;
+      width: 296px;
+      max-width: 100%;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 20px 40px -12px rgba(15, 23, 42, .3);
+      display: none
+    }
+
+    .cal.on {
+      display: block
+    }
+
+    .cal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .cal-top b {
+      font-size: 14.5px;
+      font-weight: 600
+    }
+
+    .nav {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--field);
+      color: var(--ink);
+      display: grid;
+      place-items: center
+    }
+
+    .nav:hover {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .dows,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center
+    }
+
+    .dows span {
+      font-size: 11.5px;
+      color: var(--muted);
+      padding: 4px 0;
+      font-weight: 500
+    }
+
+    .day {
+      aspect-ratio: 1;
+      border: 0;
+      background: none;
+      color: var(--ink);
+      border-radius: 8px;
+      font-size: 13.5px
+    }
+
+    .day:hover {
+      background: var(--accent-t)
+    }
+
+    .day.out {
+      color: var(--muted);
+      opacity: .45
+    }
+
+    .day.today {
+      box-shadow: inset 0 0 0 1.5px var(--accent)
+    }
+
+    .day.sel {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600
+    }
+
+    .cal-foot {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line)
+    }
+
+    .link {
+      border: 0;
+      background: none;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 6px;
+      border-radius: 6px
+    }
+
+    .link:hover {
+      background: var(--accent-t)
+    }
+
+    .submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 22px;
+      transition: background .15s
+    }
+
+    @media (prefers-color-scheme:dark) {
+      .submit {
+        color: #06281c
+      }
+    }
+
+    .submit:hover {
+      background: var(--accent-h)
+    }
+
+    .submit:disabled {
+      opacity: .6;
+      cursor: wait
+    }
+
+    .submit:focus-visible,
+    .link:focus-visible,
+    .nav:focus-visible,
+    .day:focus-visible,
+    .tabs button:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      outline-offset: 2px
+    }
+
+    /* Preview desk */
+    .preview {
+      position: sticky;
+      top: 76px
+    }
+
+    .desk {
+      background: var(--desk);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--line)
+    }
+
+    .desk-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 500
+    }
+
+    .stage {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 14px 36px -10px rgba(0, 0, 0, .35)
+    }
+
+    /* ========= PDF TEMPLATE REPLICA (from template.ejs, scoped to .paper) ========= */
+    .paper {
+      width: 210mm;
+      height: 297mm;
+      background: #fbfcfa;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      overflow: hidden;
+      font-family: 'Source Serif 4', 'Times New Roman', Georgia, serif;
+      color: #111;
+      text-align: left;
+      line-height: normal
+    }
+
+    .paper * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: inherit
+    }
+
+    .paper .border-outer {
+      position: absolute;
+      top: 13mm;
+      left: 13mm;
+      right: 13mm;
+      bottom: 13mm;
+      border: 2.2px solid #4d8265;
+      border-radius: 10px
+    }
+
+    .paper .border-inner {
+      position: absolute;
+      top: 15.5mm;
+      left: 15.5mm;
+      right: 15.5mm;
+      bottom: 15.5mm;
+      border: .8px solid #9abfaa;
+      border-radius: 7px
+    }
+
+    .paper .footer-strip {
+      position: absolute;
+      bottom: 15.5mm;
+      left: 15.5mm;
+      right: 15.5mm;
+      height: 28mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border-top: 1px solid #c2d9cb;
+      padding-top: 6px
+    }
+
+    .paper .footer-strip svg {
+      width: 58px;
+      height: 58px
+    }
+
+    .paper .footer-vline {
+      width: 1px;
+      height: 44px;
+      background: #c2d9cb
+    }
+
+    .paper .page-content {
+      position: absolute;
+      top: 16mm;
+      left: 16mm;
+      right: 16mm;
+      bottom: 43mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center
+    }
+
+    .paper .logo {
+      width: 125px;
+      margin-top: 16px;
+      margin-bottom: 14px;
+      display: block
+    }
+
+    .paper .logo-ph {
+      width: 125px;
+      height: 100px;
+      margin-top: 16px;
+      margin-bottom: 14px;
+      border: 1.5px dashed #9abfaa;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #9abfaa;
+      font: 600 14pt 'Source Sans 3', sans-serif
+    }
+
+    .paper .uni-name {
+      font-family: 'Source Sans 3', Arial, sans-serif;
+      color: #00994d;
+      font-size: 21.5pt;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .6px;
+      margin-bottom: 7px
+    }
+
+    .paper .dept-name {
+      font-size: 15.5pt;
+      font-weight: 400;
+      color: #222;
+      margin-bottom: 10px
+    }
+
+    .paper .separator {
+      width: 60%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px
+    }
+
+    .paper .sep-line-left,
+    .paper .sep-line-right {
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, #4d8265)
+    }
+
+    .paper .sep-line-right {
+      background: linear-gradient(90deg, #4d8265, transparent)
+    }
+
+    .paper .doc-type {
+      font-size: 17.5pt;
+      font-weight: 700;
+      text-align: center;
+      border-top: 2.2px solid #1a1a1a;
+      border-bottom: 2.2px solid #1a1a1a;
+      padding: 8px 32px;
+      letter-spacing: 3px;
+      margin-bottom: 26px;
+      display: inline-block
+    }
+
+    .paper .course-info {
+      width: 82%;
+      margin-bottom: 34px
+    }
+
+    .paper .course-table,
+    .paper .inner-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .paper .course-table td {
+      font-size: 12.5pt;
+      padding: 4px;
+      border: none;
+      vertical-align: top;
+      line-height: 1.5
+    }
+
+    .paper .c-label {
+      white-space: nowrap;
+      min-width: 135px
+    }
+
+    .paper .c-colon {
+      width: 22px;
+      text-align: center
+    }
+
+    .paper .people-table {
+      width: auto;
+      min-width: 82%;
+      max-width: 92%;
+      border-collapse: collapse;
+      font-size: 12pt
+    }
+
+    .paper .people-table th {
+      background: #f0f7f3;
+      font-size: 13.5pt;
+      font-weight: 700;
+      text-align: center;
+      padding: 10px 14px;
+      border: 1.5px solid #333;
+      color: #111
+    }
+
+    .paper .people-table td {
+      border: 1.5px solid #333;
+      padding: 14px 16px;
+      vertical-align: top;
+      background: #fff
+    }
+
+    .paper .inner-table td {
+      border: none;
+      padding: 3.5px 0;
+      font-size: 12pt;
+      vertical-align: top;
+      line-height: 1.5;
+      background: none
+    }
+
+    .paper .i-label {
+      min-width: 65px;
+      white-space: nowrap
+    }
+
+    .paper .i-colon {
+      width: 14px;
+      text-align: center;
+      padding: 0 2px
+    }
+
+    .paper .to-name {
+      font-size: 12.5pt;
+      font-weight: 600;
+      margin-bottom: 6px
+    }
+
+    .paper .to-detail {
+      font-size: 12pt;
+      line-height: 1.65
+    }
+
+    .paper .ph {
+      color: #a9b4ae
+    }
+
+    /* ========= END REPLICA ========= */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 12, 18, .6);
+      backdrop-filter: blur(6px);
+      display: none;
+      place-items: center;
+      z-index: 60;
+      padding: 20px
+    }
+
+    .overlay.on {
+      display: grid
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 28px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center
+    }
+
+    .modal h3 {
+      font-size: 17px;
+      margin-bottom: 4px
+    }
+
+    .modal p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px
+    }
+
+    .bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--line);
+      overflow: hidden
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .2s
+    }
+
+    .modal a {
+      color: var(--accent)
+    }
+
+    @media (max-width:960px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 16px 14px 48px
+      }
+
+      .tabs {
+        display: flex
+      }
+
+      .preview {
+        position: static;
+        display: none;
+        max-width: 560px;
+        margin: 0 auto;
+        width: 100%
+      }
+
+      body[data-tab=preview] .preview {
+        display: block
+      }
+
+      body[data-tab=preview] form {
+        display: none
+      }
+    }
+
+    @media (max-width:560px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .card {
+        padding: 16px
+      }
+
+      .head p {
+        display: none
+      }
+
+      .cal {
+        width: 100%
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important
+      }
+    }
+  </style>
 </head>
+
 <body data-tab="form">
 
-<header class="head">
-  <div class="head-in">
-    <div class="mark" aria-hidden="true">MIU</div>
-    <div>
-      <h1>Cover page generator</h1>
-      <p>Department of Pharmacy</p>
+  <header class="head">
+    <div class="head-in">
+      <div class="mark" aria-hidden="true">MIU</div>
+      <div>
+        <h1>Cover page generator</h1>
+        <p>Department of Pharmacy</p>
+      </div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="form">Details</button>
+        <button role="tab" aria-selected="false" data-tab="preview">Preview</button>
+      </div>
     </div>
-    <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="form">Details</button>
-      <button role="tab" aria-selected="false" data-tab="preview">Preview</button>
-    </div>
-  </div>
-</header>
+  </header>
 
-<main class="layout">
-<form id="pdfForm" autocomplete="off" novalidate>
+  <main class="layout">
+    <form id="pdfForm" autocomplete="off" novalidate>
 
-  <section class="card">
-    <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Assignment details</h2>
-    <div class="grid">
-      <div class="field full">
-        <label for="assignmentTitle">Assignment title</label>
-        <input id="assignmentTitle" name="assignmentTitle" list="titles" required placeholder="Select or type a title">
-        <datalist id="titles"><option value="LAB REPORT"><option value="ASSIGNMENT"><option value="TERM PAPER"><option value="PROJECT PROPOSAL"></datalist>
-      </div>
-      <div class="field">
-        <label for="courseName">Course name</label>
-        <input id="courseName" name="courseName" list="course-names" required placeholder="Select or type a course">
-        <datalist id="course-names"></datalist>
-      </div>
-      <div class="field">
-        <label for="courseCode">Course code</label>
-        <input id="courseCode" name="courseCode" required placeholder="e.g. BPM-111">
-        <span class="hint">Fills in when you pick a course</span>
-      </div>
-      <div class="field full">
-        <label for="dateBtn">Date of submission</label>
-        <button type="button" class="date-btn" id="dateBtn" aria-haspopup="dialog" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <span id="dateText">Select date</span>
-        </button>
-        <input type="hidden" name="submissionDate" id="submissionDate">
-        <div class="cal" id="cal" role="dialog" aria-label="Choose date">
-          <div class="cal-top">
-            <button type="button" class="nav" id="prev" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-            <b id="calTitle"></b>
-            <button type="button" class="nav" id="next" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <section class="card">
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <path d="M14 2v6h6M8 13h8M8 17h5" />
+          </svg>Assignment details</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="assignmentTitle">Assignment title</label>
+            <input id="assignmentTitle" name="assignmentTitle" list="titles" required
+              placeholder="Select or type a title">
+            <datalist id="titles">
+              <option value="LAB REPORT">
+              <option value="ASSIGNMENT">
+              <option value="TERM PAPER">
+              <option value="PROJECT PROPOSAL">
+            </datalist>
           </div>
-          <div class="dows"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
-          <div class="days" id="days"></div>
-          <div class="cal-foot"><button type="button" class="link" id="goToday">Today</button><button type="button" class="link" id="closeCal">Close</button></div>
+          <div class="field">
+            <label for="courseName">Course name</label>
+            <input id="courseName" name="courseName" list="course-names" required placeholder="Select or type a course">
+            <datalist id="course-names"></datalist>
+          </div>
+          <div class="field">
+            <label for="courseCode">Course code</label>
+            <input id="courseCode" name="courseCode" required placeholder="e.g. BPM-111">
+            <span class="hint">Fills in when you pick a course</span>
+          </div>
+          <div class="field full">
+            <label for="dateBtn">Date of submission</label>
+            <button type="button" class="date-btn" id="dateBtn" aria-haspopup="dialog" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+              <span id="dateText">Select date</span>
+            </button>
+            <input type="hidden" name="submissionDate" id="submissionDate">
+            <div class="cal" id="cal" role="dialog" aria-label="Choose date">
+              <div class="cal-top">
+                <button type="button" class="nav" id="prev" aria-label="Previous month"><svg width="16" height="16"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg></button>
+                <b id="calTitle"></b>
+                <button type="button" class="nav" id="next" aria-label="Next month"><svg width="16" height="16"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg></button>
+              </div>
+              <div class="dows">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+              </div>
+              <div class="days" id="days"></div>
+              <div class="cal-foot"><button type="button" class="link" id="goToday">Today</button><button type="button"
+                  class="link" id="closeCal">Close</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 10L12 5 2 10l10 5 10-5z" />
+            <path d="M6 12v5c3 2.5 9 2.5 12 0v-5" />
+          </svg>Submitted to</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="teacherName">Teacher name</label>
+            <input id="teacherName" name="teacherName" list="teacher-names" required
+              placeholder="Select or type a name">
+            <datalist id="teacher-names"></datalist>
+          </div>
+          <div class="field">
+            <label for="teacherDesignation">Designation</label>
+            <input id="teacherDesignation" name="teacherDesignation" required placeholder="e.g. Lecturer">
+          </div>
+          <div class="field">
+            <label for="teacherDepartment">Department</label>
+            <input id="teacherDepartment" name="teacherDepartment" required placeholder="e.g. Dept. of Pharmacy">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+          </svg>Submitted by</h2>
+        <div class="grid">
+          <div class="field full">
+            <label for="studentName">Student name</label>
+            <input id="studentName" name="studentName" required placeholder="e.g. Naima Nishi">
+          </div>
+          <div class="field">
+            <label for="studentId">Student ID</label>
+            <input id="studentId" name="studentId"  required placeholder="e.g. 24515">
+          </div>
+          <div class="field">
+            <label for="studentBatch">Batch</label>
+            <input id="studentBatch" name="studentBatch"  required placeholder="e.g. 47">
+          </div>
+          <div class="field">
+            <label for="studentSession">Session</label>
+            <input id="studentSession" name="studentSession" required placeholder="e.g. 2024-2025">
+          </div>
+          <div class="field">
+            <label for="studentSemester">Semester</label>
+            <input id="studentSemester" name="studentSemester" required placeholder="e.g. Spring 2026">
+          </div>
+        </div>
+      </section>
+
+      <button type="submit" class="submit" id="submitBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <path d="M7 10l5 5 5-5M12 15V3" />
+        </svg>
+        Generate &amp; download PDF
+      </button>
+    </form>
+
+    <aside class="preview" aria-label="Cover page preview">
+      <div class="desk">
+        <div class="desk-label"><span>Live preview</span><span>A4 · as printed</span></div>
+        <div class="stage" id="stage">
+          <div class="paper" id="paper">
+            <div class="border-outer"></div>
+            <div class="border-inner"></div>
+
+            <div class="footer-strip">
+              <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="56" y1="12" x2="44" y2="28" />
+                <ellipse cx="57.5" cy="10.5" rx="4.5" ry="4.5" />
+                <ellipse cx="40" cy="36" rx="24" ry="8" />
+                <path d="M16 36 Q15 58 40 62 Q65 58 64 36" />
+                <rect x="24" y="62" width="32" height="5" rx="2.5" />
+                <path d="M30 42 Q40 40 50 42" stroke-width="1.2" stroke-dasharray="2,2" />
+              </svg>
+              <div class="footer-vline"></div>
+              <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="28" y="10" width="24" height="10" rx="3" />
+                <rect x="24" y="20" width="32" height="48" rx="5" />
+                <rect x="28" y="30" width="24" height="20" rx="2" fill="#e8f5ee" stroke-width="1.5" /><text x="40"
+                  y="45" font-family="serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#4d8265"
+                  stroke="none" font-style="italic">Rx</text>
+                <circle cx="34" cy="58" r="2.5" fill="#9abfaa" stroke="none" />
+                <circle cx="40" cy="62" r="2.5" fill="#9abfaa" stroke="none" />
+                <circle cx="46" cy="58" r="2.5" fill="#9abfaa" stroke="none" />
+              </svg>
+              <div class="footer-vline"></div>
+              <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="40" y1="10" x2="40" y2="72" stroke-width="2.5" />
+                <path d="M40 18 C26 10 12 18 16 28 C20 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8" />
+                <path d="M40 18 C54 10 68 18 64 28 C60 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8" />
+                <path d="M40 32 C28 40 52 52 40 62 C32 70 38 76 40 76" />
+                <path d="M40 32 C52 40 28 52 40 62 C48 70 42 76 40 76" />
+                <circle cx="40" cy="10" r="4" fill="#d6ede1" />
+              </svg>
+              <div class="footer-vline"></div>
+              <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <g transform="rotate(-40 40 40)">
+                  <path d="M20 40 A20 14 0 0 1 40 26 L40 54 A20 14 0 0 1 20 40Z" fill="#d6ede1" />
+                  <path d="M60 40 A20 14 0 0 0 40 26 L40 54 A20 14 0 0 0 60 40Z" fill="#fff" />
+                  <line x1="40" y1="26" x2="40" y2="54" stroke-width="1.5" />
+                  <path d="M26 33 Q32 30 36 32" stroke="#fff" stroke-width="1.5" fill="none" />
+                </g>
+              </svg>
+              <div class="footer-vline"></div>
+              <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="33" y="8" width="14" height="8" rx="3" />
+                <rect x="35" y="16" width="10" height="16" rx="2" />
+                <rect x="30" y="32" width="20" height="7" rx="3" />
+                <rect x="35" y="39" width="10" height="8" rx="2" />
+                <path d="M40 47 L40 54" />
+                <rect x="22" y="54" width="36" height="5" rx="2" />
+                <path d="M34 54 L34 50 M46 54 L46 50" stroke-width="1.5" />
+                <path d="M20 70 C22 62 38 60 40 60 C42 60 58 62 60 70" />
+                <rect x="18" y="70" width="44" height="5" rx="3" />
+                <path d="M30 59 C27 63 28 68 30 68" stroke-width="1.5" />
+              </svg>
+            </div>
+
+            <div class="page-content">
+              <div id="logoBox"></div>
+              <div class="uni-name">MANARAT INTERNATIONAL UNIVERSITY</div>
+              <div class="dept-name">Department of Pharmacy</div>
+              <div class="separator">
+                <div class="sep-line-left"></div>
+                <div style="width:9px;height:9px;background:#4d8265;transform:rotate(45deg);flex-shrink:0"></div>
+                <div class="sep-line-right"></div>
+              </div>
+              <div class="doc-type" data-p="assignmentTitle" data-ph="ASSIGNMENT"></div>
+              <div class="course-info">
+                <table class="course-table" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td class="c-label">Course Title</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td data-p="courseName" data-ph="Course name"></td>
+                  </tr>
+                  <tr>
+                    <td class="c-label">Course Code</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td data-p="courseCode" data-ph="Course code"></td>
+                  </tr>
+                  <tr>
+                    <td class="c-label">Submission Date</td>
+                    <td class="c-colon">&nbsp;:&nbsp;</td>
+                    <td data-p="submissionDate" data-ph="DD-MM-YYYY"></td>
+                  </tr>
+                </table>
+              </div>
+              <table class="people-table">
+                <tr>
+                  <th style="width:50%">Submitted to</th>
+                  <th style="width:50%">Submitted by</th>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="to-name" data-p="teacherName" data-ph="Teacher name"></div>
+                    <div class="to-detail"><span data-p="teacherDesignation" data-ph="Designation"></span>,<br><span
+                        data-p="teacherDepartment" data-ph="Department"></span><br>MIU</div>
+                  </td>
+                  <td>
+                    <table class="inner-table" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td class="i-label">Name</td>
+                        <td class="i-colon">&nbsp;:&nbsp;</td>
+                        <td data-p="studentName" data-ph="Student name"></td>
+                      </tr>
+                      <tr>
+                        <td class="i-label">ID</td>
+                        <td class="i-colon">&nbsp;:&nbsp;</td>
+                        <td data-p="studentId" data-ph="ID"></td>
+                      </tr>
+                      <tr>
+                        <td class="i-label">Batch</td>
+                        <td class="i-colon">&nbsp;:&nbsp;</td>
+                        <td data-p="studentBatch" data-ph="Batch"></td>
+                      </tr>
+                      <tr>
+                        <td class="i-label">Session</td>
+                        <td class="i-colon">&nbsp;:&nbsp;</td>
+                        <td data-p="studentSession" data-ph="Session"></td>
+                      </tr>
+                      <tr>
+                        <td class="i-label">Semester</td>
+                        <td class="i-colon">&nbsp;:&nbsp;</td>
+                        <td data-p="studentSemester" data-ph="Semester"></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </aside>
+  </main>
 
-  <section class="card">
-    <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/></svg>Submitted to</h2>
-    <div class="grid">
-      <div class="field full">
-        <label for="teacherName">Teacher name</label>
-        <input id="teacherName" name="teacherName" list="teacher-names" required placeholder="Select or type a name">
-        <datalist id="teacher-names"></datalist>
-      </div>
-      <div class="field">
-        <label for="teacherDesignation">Designation</label>
-        <input id="teacherDesignation" name="teacherDesignation" required placeholder="e.g. Lecturer">
-      </div>
-      <div class="field">
-        <label for="teacherDepartment">Department</label>
-        <input id="teacherDepartment" name="teacherDepartment" required placeholder="e.g. Dept. of Pharmacy">
-      </div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>Submitted by</h2>
-    <div class="grid">
-      <div class="field full">
-        <label for="studentName">Student name</label>
-        <input id="studentName" name="studentName" required placeholder="e.g. Naima Nishi">
-      </div>
-      <div class="field">
-        <label for="studentId">Student ID</label>
-        <input id="studentId" name="studentId" inputmode="numeric" required placeholder="e.g. 24515">
-      </div>
-      <div class="field">
-        <label for="studentBatch">Batch</label>
-        <input id="studentBatch" name="studentBatch" inputmode="numeric" required placeholder="e.g. 47">
-      </div>
-      <div class="field">
-        <label for="studentSession">Session</label>
-        <input id="studentSession" name="studentSession" required placeholder="e.g. 2024-2025">
-      </div>
-      <div class="field">
-        <label for="studentSemester">Semester</label>
-        <input id="studentSemester" name="studentSemester" required placeholder="e.g. Spring 2026">
-      </div>
-    </div>
-  </section>
-
-  <button type="submit" class="submit" id="submitBtn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
-    Generate &amp; download PDF
-  </button>
-</form>
-
-<aside class="preview" aria-label="Cover page preview">
-  <div class="desk">
-    <div class="desk-label"><span>Live preview</span><span>A4 · as printed</span></div>
-    <div class="stage" id="stage">
-<div class="paper" id="paper">
-  <div class="border-outer"></div>
-  <div class="border-inner"></div>
-
-  <div class="footer-strip">
-    <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="56" y1="12" x2="44" y2="28"/><ellipse cx="57.5" cy="10.5" rx="4.5" ry="4.5"/><ellipse cx="40" cy="36" rx="24" ry="8"/><path d="M16 36 Q15 58 40 62 Q65 58 64 36"/><rect x="24" y="62" width="32" height="5" rx="2.5"/><path d="M30 42 Q40 40 50 42" stroke-width="1.2" stroke-dasharray="2,2"/></svg>
-    <div class="footer-vline"></div>
-    <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="28" y="10" width="24" height="10" rx="3"/><rect x="24" y="20" width="32" height="48" rx="5"/><rect x="28" y="30" width="24" height="20" rx="2" fill="#e8f5ee" stroke-width="1.5"/><text x="40" y="45" font-family="serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#4d8265" stroke="none" font-style="italic">Rx</text><circle cx="34" cy="58" r="2.5" fill="#9abfaa" stroke="none"/><circle cx="40" cy="62" r="2.5" fill="#9abfaa" stroke="none"/><circle cx="46" cy="58" r="2.5" fill="#9abfaa" stroke="none"/></svg>
-    <div class="footer-vline"></div>
-    <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="40" y1="10" x2="40" y2="72" stroke-width="2.5"/><path d="M40 18 C26 10 12 18 16 28 C20 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8"/><path d="M40 18 C54 10 68 18 64 28 C60 36 40 30 40 22" fill="#d6ede1" stroke-width="1.8"/><path d="M40 32 C28 40 52 52 40 62 C32 70 38 76 40 76"/><path d="M40 32 C52 40 28 52 40 62 C48 70 42 76 40 76"/><circle cx="40" cy="10" r="4" fill="#d6ede1"/></svg>
-    <div class="footer-vline"></div>
-    <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-40 40 40)"><path d="M20 40 A20 14 0 0 1 40 26 L40 54 A20 14 0 0 1 20 40Z" fill="#d6ede1"/><path d="M60 40 A20 14 0 0 0 40 26 L40 54 A20 14 0 0 0 60 40Z" fill="#fff"/><line x1="40" y1="26" x2="40" y2="54" stroke-width="1.5"/><path d="M26 33 Q32 30 36 32" stroke="#fff" stroke-width="1.5" fill="none"/></g></svg>
-    <div class="footer-vline"></div>
-    <svg viewBox="0 0 80 80" fill="none" stroke="#5a8a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="33" y="8" width="14" height="8" rx="3"/><rect x="35" y="16" width="10" height="16" rx="2"/><rect x="30" y="32" width="20" height="7" rx="3"/><rect x="35" y="39" width="10" height="8" rx="2"/><path d="M40 47 L40 54"/><rect x="22" y="54" width="36" height="5" rx="2"/><path d="M34 54 L34 50 M46 54 L46 50" stroke-width="1.5"/><path d="M20 70 C22 62 38 60 40 60 C42 60 58 62 60 70"/><rect x="18" y="70" width="44" height="5" rx="3"/><path d="M30 59 C27 63 28 68 30 68" stroke-width="1.5"/></svg>
-  </div>
-
-  <div class="page-content">
-    <div id="logoBox"></div>
-    <div class="uni-name">MANARAT INTERNATIONAL UNIVERSITY</div>
-    <div class="dept-name">Department of Pharmacy</div>
-    <div class="separator"><div class="sep-line-left"></div><div style="width:9px;height:9px;background:#4d8265;transform:rotate(45deg);flex-shrink:0"></div><div class="sep-line-right"></div></div>
-    <div class="doc-type" data-p="assignmentTitle" data-ph="ASSIGNMENT"></div>
-    <div class="course-info">
-      <table class="course-table" cellspacing="0" cellpadding="0">
-        <tr><td class="c-label">Course Title</td><td class="c-colon">&nbsp;:&nbsp;</td><td data-p="courseName" data-ph="Course name"></td></tr>
-        <tr><td class="c-label">Course Code</td><td class="c-colon">&nbsp;:&nbsp;</td><td data-p="courseCode" data-ph="Course code"></td></tr>
-        <tr><td class="c-label">Submission Date</td><td class="c-colon">&nbsp;:&nbsp;</td><td data-p="submissionDate" data-ph="DD-MM-YYYY"></td></tr>
-      </table>
-    </div>
-    <table class="people-table">
-      <tr><th style="width:50%">Submitted to</th><th style="width:50%">Submitted by</th></tr>
-      <tr>
-        <td>
-          <div class="to-name" data-p="teacherName" data-ph="Teacher name"></div>
-          <div class="to-detail"><span data-p="teacherDesignation" data-ph="Designation"></span>,<br><span data-p="teacherDepartment" data-ph="Department"></span><br>MIU</div>
-        </td>
-        <td>
-          <table class="inner-table" cellspacing="0" cellpadding="0">
-            <tr><td class="i-label">Name</td><td class="i-colon">&nbsp;:&nbsp;</td><td data-p="studentName" data-ph="Student name"></td></tr>
-            <tr><td class="i-label">ID</td><td class="i-colon">&nbsp;:&nbsp;</td><td data-p="studentId" data-ph="ID"></td></tr>
-            <tr><td class="i-label">Batch</td><td class="i-colon">&nbsp;:&nbsp;</td><td data-p="studentBatch" data-ph="Batch"></td></tr>
-            <tr><td class="i-label">Session</td><td class="i-colon">&nbsp;:&nbsp;</td><td data-p="studentSession" data-ph="Session"></td></tr>
-            <tr><td class="i-label">Semester</td><td class="i-colon">&nbsp;:&nbsp;</td><td data-p="studentSemester" data-ph="Semester"></td></tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
+  <div class="overlay" id="overlay" role="alertdialog" aria-live="polite">
+    <div class="modal">
+      <h3>Generating PDF</h3>
+      <p id="status">Preparing your document</p>
+      <div class="bar"><i id="bar"></i></div>
     </div>
   </div>
-</aside>
-</main>
 
-<div class="overlay" id="overlay" role="alertdialog" aria-live="polite">
-  <div class="modal">
-    <h3>Generating PDF</h3>
-    <p id="status">Preparing your document</p>
-    <div class="bar"><i id="bar"></i></div>
-  </div>
-</div>
+  <script>
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, '0');
 
-<script>
-const $ = id => document.getElementById(id);
-const pad = n => String(n).padStart(2,'0');
+    /* Preview image location; support both the real file name and the friendly alias. */
+    const LOGO_SOURCES = ['/MUI_Logo.png', '/logo.png'];
 
-/* Path of the logo your server passes to the template as logoSrc. Change if different. */
-const LOGO_SRC = '/logo.png';
+    /* ---------- Data ---------- */
+    const courses = {
+      "Inorganic Pharmacy-I": "BPM-111", "Inorganic Pharmacy-I-Lab": "BPM-112", "Organic Pharmacy": "BPM-113", "Organic Pharmacy-Lab": "BPM-114", "Pharmacognosy-I": "BPM-115", "Pharmacognosy-I-Lab": "BPM-116", "Essential Computing": "BPM-119",
+      "Inorganic Pharmacy-II": "BPM-121", "Inorganic Pharmacy-II-Lab": "BPM-122", "Physical Pharmacy - I": "BPM-123", "Physical Pharmacy - I-Lab": "BPM-124", "Physiology - I": "BPM-125", "Physiology - I-Lab": "BPM-126", "Pharmaceutical Microbiology - I": "BPM-127", "Pharmaceutical Microbiology - I-Lab": "BPM-128", "Basic Anatomy": "BPM-131", "Oral Assessment-I": "BPM-199",
+      "Biochemistry & Molecular Biology": "BPM-211", "Biochem. & Molecular Biology-Lab": "BPM-212", "Physical Pharmacy - II": "BPM-213", "Physical Pharmacy - II-Lab": "BPM-214", "Physiology - II": "BPM-215", "Physiology - II-Lab": "BPM-216", "Pharmaceutical Microbiology-II": "BPM-217", "Pharmaceutical Microbiology-II-Lab": "BPM-218", "Basic Mathematics and Statistics": "BPM-219",
+      "Pharmaceutical Analysis-I": "BPM-221", "Pharmaceutical Analysis-I-Lab": "BPM-222", "Pharmaceutical Technology-I": "BPM-223", "Pharmaceutical Technology-I-Lab": "BPM-224", "Pharmacognosy - II": "BPM-225", "Pharmacognosy - II-Lab": "BPM-226", "Pharmacology - I": "BPM-227", "Pharmacology - I-Lab": "BPM-228", "Pathology": "BPM-231", "Oral Assessment-II": "BPM-299",
+      "Medicinal Chemistry-I": "BPM-311", "Medicinal Chemistry-I-Lab": "BPM-312", "Pharmaceutical Technology-II": "BPM-313", "Pharmaceutical Technology-II-Lab": "BPM-314", "Biopharmaceutics and Pharmacokinetics-I": "BPM-315", "Biopharmaceutics and Pharmacokinetics-I-Lab": "BPM-316", "Pharmacology-II": "BPM-317", "Pharmacology-II-Lab": "BPM-318", "Pharmaceutical Marketing and Management": "BPM-319",
+      "Pharmaceutical Analysis-II": "BPM-321", "Pharmaceutical Analysis-II-Lab": "BPM-322", "Medicinal Chemistry-II": "BPM-323", "Medicinal Chemistry-II-Lab": "BPM-324", "Biopharmaceutics and Pharmacokinetics-II": "BPM-325", "Biopharmaceutics and Pharmacokinetics-II-Lab": "BPM-326", "Pharmaceutical Engineering": "BPM-327", "Pharmacology-III": "BPM-427", "Pharmacology-III-Lab": "BPM-428", "Oral Assessment-III": "BPM-399",
+      "Pharmaceutical Biotechnology": "BPM-411", "Medicinal Chemistry-III": "BPM-413", "Medicinal Chemistry-III-Lab": "BPM-414", "Pharmaceutical Technology - III": "BPM-415", "Cosmetology": "BPM-417", "Cosmetology-Lab": "BPM-418", "Clinical Pharmacy": "BPM-429",
+      "Advanced Pharmaceutical Analysis": "BPM-421", "Hospital and Community Pharmacy": "BPM-423", "Pharmaceutical Regulatory Affairs": "BPM-425", "Pharmacology-IV": "BPM-431", "Oral Assessment-IV": "BPM-499",
+      "English Fundamentals": "GED-111", "Basic Concept of Islam": "GED-122", "Composition and Communication Skills": "GED-213", "Bangladesh Studies": "GED-224", "Life and Teaching of Prophet Md. (PBUH)": "GED-235", "Quranic Language": "GED-316", "Quran Science and Humanity": "GED-327", "Environment Studies": "GED-338"
+    };
+    const DEPT = "Dept. of Pharmacy";
+    const teachers = {
+      "Mst. Boby Aktar Bithy": "Assistant Professor", "Mr. Muhammad Rakib Al Mamun": "Assistant Professor", "Md. Rezaul Karim": "Associate Professor",
+      "Mst. Rikta Banu": "Assistant Professor & Program Coordinator", "Mr. Mahedi Hasan": "Lecturer", "Prof. Dr. Choudhury Mahmood Hasan": "Professor Emeritus",
+      "Iffat Hasnin Era": "Lecturer", "Mst. Reshma Khatun": "Assistant Professor", "Shafayet Ahmed Siddiqui": "Lecturer", "Dr. Md. Ahad Ali Khan": "Assistant Professor",
+      "Dr. Md. Nur Islam": "Assistant Professor", "Nilufar Sultana": "Assistant Professor", "Muslima Khatun": "Lecturer", "Nahid Hasan": "Lecturer",
+      "Murshida Mollik": "Lecturer", "Mst. Jannatul Mewa": "Lecturer", "Mst. Bobita Yeasmin": "Lecturer", "Shahnaz Parvin": "Lecturer"
+    };
+    const fill = (id, keys) => { $(id).innerHTML = keys.map(k => `<option value="${k.replace(/"/g, '&quot;')}">`).join(''); };
+    fill('course-names', Object.keys(courses));
+    fill('teacher-names', Object.keys(teachers));
 
-/* ---------- Data ---------- */
-const courses = {
-  "Inorganic Pharmacy-I":"BPM-111","Inorganic Pharmacy-I-Lab":"BPM-112","Organic Pharmacy":"BPM-113","Organic Pharmacy-Lab":"BPM-114","Pharmacognosy-I":"BPM-115","Pharmacognosy-I-Lab":"BPM-116","Essential Computing":"BPM-119",
-  "Inorganic Pharmacy-II":"BPM-121","Inorganic Pharmacy-II-Lab":"BPM-122","Physical Pharmacy - I":"BPM-123","Physical Pharmacy - I-Lab":"BPM-124","Physiology - I":"BPM-125","Physiology - I-Lab":"BPM-126","Pharmaceutical Microbiology - I":"BPM-127","Pharmaceutical Microbiology - I-Lab":"BPM-128","Basic Anatomy":"BPM-131","Oral Assessment-I":"BPM-199",
-  "Biochemistry & Molecular Biology":"BPM-211","Biochem. & Molecular Biology-Lab":"BPM-212","Physical Pharmacy - II":"BPM-213","Physical Pharmacy - II-Lab":"BPM-214","Physiology - II":"BPM-215","Physiology - II-Lab":"BPM-216","Pharmaceutical Microbiology-II":"BPM-217","Pharmaceutical Microbiology-II-Lab":"BPM-218","Basic Mathematics and Statistics":"BPM-219",
-  "Pharmaceutical Analysis-I":"BPM-221","Pharmaceutical Analysis-I-Lab":"BPM-222","Pharmaceutical Technology-I":"BPM-223","Pharmaceutical Technology-I-Lab":"BPM-224","Pharmacognosy - II":"BPM-225","Pharmacognosy - II-Lab":"BPM-226","Pharmacology - I":"BPM-227","Pharmacology - I-Lab":"BPM-228","Pathology":"BPM-231","Oral Assessment-II":"BPM-299",
-  "Medicinal Chemistry-I":"BPM-311","Medicinal Chemistry-I-Lab":"BPM-312","Pharmaceutical Technology-II":"BPM-313","Pharmaceutical Technology-II-Lab":"BPM-314","Biopharmaceutics and Pharmacokinetics-I":"BPM-315","Biopharmaceutics and Pharmacokinetics-I-Lab":"BPM-316","Pharmacology-II":"BPM-317","Pharmacology-II-Lab":"BPM-318","Pharmaceutical Marketing and Management":"BPM-319",
-  "Pharmaceutical Analysis-II":"BPM-321","Pharmaceutical Analysis-II-Lab":"BPM-322","Medicinal Chemistry-II":"BPM-323","Medicinal Chemistry-II-Lab":"BPM-324","Biopharmaceutics and Pharmacokinetics-II":"BPM-325","Biopharmaceutics and Pharmacokinetics-II-Lab":"BPM-326","Pharmaceutical Engineering":"BPM-327","Pharmacology-III":"BPM-427","Pharmacology-III-Lab":"BPM-428","Oral Assessment-III":"BPM-399",
-  "Pharmaceutical Biotechnology":"BPM-411","Medicinal Chemistry-III":"BPM-413","Medicinal Chemistry-III-Lab":"BPM-414","Pharmaceutical Technology - III":"BPM-415","Cosmetology":"BPM-417","Cosmetology-Lab":"BPM-418","Clinical Pharmacy":"BPM-429",
-  "Advanced Pharmaceutical Analysis":"BPM-421","Hospital and Community Pharmacy":"BPM-423","Pharmaceutical Regulatory Affairs":"BPM-425","Pharmacology-IV":"BPM-431","Oral Assessment-IV":"BPM-499",
-  "English Fundamentals":"GED-111","Basic Concept of Islam":"GED-122","Composition and Communication Skills":"GED-213","Bangladesh Studies":"GED-224","Life and Teaching of Prophet Md. (PBUH)":"GED-235","Quranic Language":"GED-316","Quran Science and Humanity":"GED-327","Environment Studies":"GED-338"
-};
-const DEPT = "Dept. of Pharmacy";
-const teachers = {
-  "Mst. Boby Aktar Bithy":"Assistant Professor","Mr. Muhammad Rakib Al Mamun":"Assistant Professor","Md. Rezaul Karim":"Associate Professor",
-  "Mst. Rikta Banu":"Assistant Professor & Program Coordinator","Mr. Mahedi Hasan":"Lecturer","Prof. Dr. Choudhury Mahmood Hasan":"Professor Emeritus",
-  "Iffat Hasnin Era":"Lecturer","Mst. Reshma Khatun":"Assistant Professor","Shafayet Ahmed Siddiqui":"Lecturer","Dr. Md. Ahad Ali Khan":"Assistant Professor",
-  "Dr. Md. Nur Islam":"Assistant Professor","Nilufar Sultana":"Assistant Professor","Muslima Khatun":"Lecturer","Nahid Hasan":"Lecturer",
-  "Murshida Mollik":"Lecturer","Mst. Jannatul Mewa":"Lecturer","Mst. Bobita Yeasmin":"Lecturer","Shahnaz Parvin":"Lecturer"
-};
-const fill = (id, keys) => { $(id).innerHTML = keys.map(k => `<option value="${k.replace(/"/g,'&quot;')}">`).join(''); };
-fill('course-names', Object.keys(courses));
-fill('teacher-names', Object.keys(teachers));
+    /* ---------- Live preview (mirrors template.ejs) ---------- */
+    const bindings = [...document.querySelectorAll('[data-p]')];
+    function sync() {
+      bindings.forEach(el => {
+        const src = $(el.dataset.p);
+        const v = (src ? src.value : '').trim();
+        el.textContent = v || el.dataset.ph;
+        el.classList.toggle('ph', !v);
+      });
+    }
+    $('pdfForm').addEventListener('input', sync);
+    $('courseName').addEventListener('input', e => { if (courses[e.target.value]) { $('courseCode').value = courses[e.target.value]; sync(); } });
+    $('teacherName').addEventListener('input', e => {
+      const d = teachers[e.target.value];
+      if (d) { $('teacherDesignation').value = d; $('teacherDepartment').value = DEPT; sync(); }
+    });
 
-/* ---------- Live preview (mirrors template.ejs) ---------- */
-const bindings = [...document.querySelectorAll('[data-p]')];
-function sync(){
-  bindings.forEach(el => {
-    const src = $(el.dataset.p);
-    const v = (src ? src.value : '').trim();
-    el.textContent = v || el.dataset.ph;
-    el.classList.toggle('ph', !v);
-  });
-}
-$('pdfForm').addEventListener('input', sync);
-$('courseName').addEventListener('input', e => { if (courses[e.target.value]) { $('courseCode').value = courses[e.target.value]; sync(); } });
-$('teacherName').addEventListener('input', e => {
-  const d = teachers[e.target.value];
-  if (d) { $('teacherDesignation').value = d; $('teacherDepartment').value = DEPT; sync(); }
-});
+    /* Logo with fallback */
+    (function () {
+      const img = new Image();
+      img.className = 'logo';
+      img.alt = 'MIU Logo';
+      const tryNext = (index = 0) => {
+        if (index >= LOGO_SOURCES.length) {
+          $('logoBox').innerHTML = '<div class="logo-ph">LOGO</div>';
+          return;
+        }
+        img.onload = () => $('logoBox').replaceChildren(img);
+        img.onerror = () => tryNext(index + 1);
+        $('logoBox').innerHTML = '<div class="logo-ph">LOGO</div>';
+        img.src = LOGO_SOURCES[index];
+      };
+      tryNext();
+    })();
 
-/* Logo with fallback */
-(function(){
-  const img = new Image(); img.className = 'logo'; img.alt = 'MIU Logo';
-  img.onload = () => $('logoBox').replaceChildren(img);
-  img.onerror = () => { $('logoBox').innerHTML = '<div class="logo-ph">LOGO</div>'; };
-  $('logoBox').innerHTML = '<div class="logo-ph">LOGO</div>';
-  img.src = LOGO_SRC;
-})();
+    /* Scale the A4 page to fit its container */
+    const stage = $('stage'), paper = $('paper');
+    function fit() {
+      const w = stage.clientWidth; if (!w) return;
+      const s = w / paper.offsetWidth;
+      paper.style.transform = `scale(${s})`;
+      stage.style.height = (paper.offsetHeight * s) + 'px';
+    }
+    new ResizeObserver(fit).observe(stage);
+    window.addEventListener('load', fit);
 
-/* Scale the A4 page to fit its container */
-const stage = $('stage'), paper = $('paper');
-function fit(){
-  const w = stage.clientWidth; if (!w) return;
-  const s = w / paper.offsetWidth;
-  paper.style.transform = `scale(${s})`;
-  stage.style.height = (paper.offsetHeight * s) + 'px';
-}
-new ResizeObserver(fit).observe(stage);
-window.addEventListener('load', fit);
+    /* ---------- Mobile tabs ---------- */
+    document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+      document.body.dataset.tab = b.dataset.tab;
+      document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+      requestAnimationFrame(fit); window.scrollTo({ top: 0 });
+    }));
 
-/* ---------- Mobile tabs ---------- */
-document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
-  document.body.dataset.tab = b.dataset.tab;
-  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
-  requestAnimationFrame(fit); window.scrollTo({top:0});
-}));
+    /* ---------- Calendar ---------- */
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const cal = $('cal'), dateBtn = $('dateBtn');
+    let selected = new Date(); selected.setHours(0, 0, 0, 0);
+    let view = new Date(selected.getFullYear(), selected.getMonth(), 1);
+    const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    const fmt = d => `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
 
-/* ---------- Calendar ---------- */
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const cal = $('cal'), dateBtn = $('dateBtn');
-let selected = new Date(); selected.setHours(0,0,0,0);
-let view = new Date(selected.getFullYear(), selected.getMonth(), 1);
-const same = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
-const fmt = d => `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+    function setDate(d) {
+      selected = d;
+      $('submissionDate').value = fmt(d);
+      $('dateText').textContent = `${pad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+      sync();
+    }
+    function renderCal() {
+      $('calTitle').textContent = `${MONTHS[view.getMonth()]} ${view.getFullYear()}`;
+      const first = new Date(view.getFullYear(), view.getMonth(), 1);
+      const start = new Date(first); start.setDate(1 - first.getDay());
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      let html = '';
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(start); d.setDate(start.getDate() + i);
+        const cls = ['day', d.getMonth() !== view.getMonth() && 'out', same(d, today) && 'today', same(d, selected) && 'sel'].filter(Boolean).join(' ');
+        html += `<button type="button" class="${cls}" data-t="${d.getTime()}" aria-label="${d.toDateString()}">${d.getDate()}</button>`;
+      }
+      $('days').innerHTML = html;
+    }
+    function toggleCal(open) {
+      cal.classList.toggle('on', open);
+      dateBtn.setAttribute('aria-expanded', open);
+      if (open) { view = new Date(selected.getFullYear(), selected.getMonth(), 1); renderCal(); }
+    }
+    dateBtn.addEventListener('click', () => toggleCal(!cal.classList.contains('on')));
+    $('prev').addEventListener('click', () => { view.setMonth(view.getMonth() - 1); renderCal(); });
+    $('next').addEventListener('click', () => { view.setMonth(view.getMonth() + 1); renderCal(); });
+    $('days').addEventListener('click', e => {
+      const b = e.target.closest('.day'); if (!b) return;
+      setDate(new Date(Number(b.dataset.t))); toggleCal(false); dateBtn.focus();
+    });
+    $('goToday').addEventListener('click', () => { const t = new Date(); t.setHours(0, 0, 0, 0); setDate(t); toggleCal(false); });
+    $('closeCal').addEventListener('click', () => { toggleCal(false); dateBtn.focus(); });
+    document.addEventListener('click', e => { if (!cal.contains(e.target) && !dateBtn.contains(e.target)) toggleCal(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleCal(false); });
+    setDate(selected);
+    sync();
 
-function setDate(d){
-  selected = d;
-  $('submissionDate').value = fmt(d);
-  $('dateText').textContent = `${pad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  sync();
-}
-function renderCal(){
-  $('calTitle').textContent = `${MONTHS[view.getMonth()]} ${view.getFullYear()}`;
-  const first = new Date(view.getFullYear(), view.getMonth(), 1);
-  const start = new Date(first); start.setDate(1 - first.getDay());
-  const today = new Date(); today.setHours(0,0,0,0);
-  let html = '';
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(start); d.setDate(start.getDate() + i);
-    const cls = ['day', d.getMonth() !== view.getMonth() && 'out', same(d,today) && 'today', same(d,selected) && 'sel'].filter(Boolean).join(' ');
-    html += `<button type="button" class="${cls}" data-t="${d.getTime()}" aria-label="${d.toDateString()}">${d.getDate()}</button>`;
-  }
-  $('days').innerHTML = html;
-}
-function toggleCal(open){
-  cal.classList.toggle('on', open);
-  dateBtn.setAttribute('aria-expanded', open);
-  if (open) { view = new Date(selected.getFullYear(), selected.getMonth(), 1); renderCal(); }
-}
-dateBtn.addEventListener('click', () => toggleCal(!cal.classList.contains('on')));
-$('prev').addEventListener('click', () => { view.setMonth(view.getMonth()-1); renderCal(); });
-$('next').addEventListener('click', () => { view.setMonth(view.getMonth()+1); renderCal(); });
-$('days').addEventListener('click', e => {
-  const b = e.target.closest('.day'); if (!b) return;
-  setDate(new Date(Number(b.dataset.t))); toggleCal(false); dateBtn.focus();
-});
-$('goToday').addEventListener('click', () => { const t = new Date(); t.setHours(0,0,0,0); setDate(t); toggleCal(false); });
-$('closeCal').addEventListener('click', () => { toggleCal(false); dateBtn.focus(); });
-document.addEventListener('click', e => { if (!cal.contains(e.target) && !dateBtn.contains(e.target)) toggleCal(false); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleCal(false); });
-setDate(selected);
-sync();
+    /* ---------- Submit ---------- */
+    const form = $('pdfForm'), overlay = $('overlay'), bar = $('bar'), statusEl = $('status'), btn = $('submitBtn');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      btn.disabled = true; overlay.classList.add('on');
+      const data = Object.fromEntries(new FormData(form).entries());
 
-/* ---------- Submit ---------- */
-const form = $('pdfForm'), overlay = $('overlay'), bar = $('bar'), statusEl = $('status'), btn = $('submitBtn');
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!form.reportValidity()) return;
-  btn.disabled = true; overlay.classList.add('on');
-  const data = Object.fromEntries(new FormData(form).entries());
+      let p = 0;
+      const timer = setInterval(() => {
+        if (p < 95) { p++; bar.style.width = p + '%'; }
+        statusEl.textContent = p < 30 ? 'Initializing engine…' : p < 60 ? 'Rendering document…' : 'Finalizing PDF…';
+      }, 100);
 
-  let p = 0;
-  const timer = setInterval(() => {
-    if (p < 95) { p++; bar.style.width = p + '%'; }
-    statusEl.textContent = p < 30 ? 'Initializing engine…' : p < 60 ? 'Rendering document…' : 'Finalizing PDF…';
-  }, 100);
-
-  try {
-    const res = await fetch('/generate-pdf', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-    if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error || 'Failed to generate PDF'); }
-    const blob = await res.blob();
-    if (!blob.size) throw new Error('Generated PDF is empty');
-    clearInterval(timer); bar.style.width = '100%';
-    const url = URL.createObjectURL(blob);
-    const cd = res.headers.get('Content-Disposition');
-    const filename = cd && cd.includes('filename=') ? cd.split('filename=')[1].replace(/"/g,'') : 'Cover_Page.pdf';
-    const a = document.createElement('a'); a.href = url; a.download = filename; a.style.display = 'none';
-    document.body.appendChild(a); a.click(); a.remove();
-    statusEl.innerHTML = `PDF ready. <a href="${url}" download="${filename}">Download again</a> if it didn't start.`;
-    setTimeout(() => { overlay.classList.remove('on'); btn.disabled = false; bar.style.width = '0'; URL.revokeObjectURL(url); }, 12000);
-  } catch (err) {
-    clearInterval(timer); overlay.classList.remove('on'); btn.disabled = false; bar.style.width = '0';
-    alert('Error: ' + err.message);
-  }
-});
-</script>
+      try {
+        const res = await fetch('/generate-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error || 'Failed to generate PDF'); }
+        const blob = await res.blob();
+        if (!blob.size) throw new Error('Generated PDF is empty');
+        clearInterval(timer); bar.style.width = '100%';
+        const url = URL.createObjectURL(blob);
+        const cd = res.headers.get('Content-Disposition');
+        const filename = cd && cd.includes('filename=') ? cd.split('filename=')[1].replace(/"/g, '') : 'Cover_Page.pdf';
+        const a = document.createElement('a'); a.href = url; a.download = filename; a.style.display = 'none';
+        document.body.appendChild(a); a.click(); a.remove();
+        statusEl.innerHTML = `PDF ready. <a href="${url}" download="${filename}">Download again</a> if it didn't start.`;
+        setTimeout(() => { overlay.classList.remove('on'); btn.disabled = false; bar.style.width = '0'; URL.revokeObjectURL(url); }, 12000);
+      } catch (err) {
+        clearInterval(timer); overlay.classList.remove('on'); btn.disabled = false; bar.style.width = '0';
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
 </body>
+
 </html>
